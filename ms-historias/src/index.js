@@ -8,5 +8,5 @@ const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '127.0.0.1';
 
 app.listen(PORT, HOST, () => {
-  console.log(`ms-usuarios escuchando en http://${HOST}:${PORT}`);
+  console.log(`ms-historias escuchando en http://${HOST}:${PORT}`);
 });
