@@ -1,5 +1,5 @@
 // =====================================================================
-// CAPA DE MODELO (entidad)
+// CAPA DE MODELO (entidad) para pacientes
 // Define qué campos tiene un Paciente y qué reglas deben cumplir.
 // No sabe nada de HTTP ni de bases de datos.
 //

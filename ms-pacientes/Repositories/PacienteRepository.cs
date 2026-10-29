@@ -22,7 +22,7 @@ public class PacientesRepository : IPacientesRepository
 
     public Task<Paciente?> FindByIdAsync(int id)
     {
-        return Task.FromResult(_pacientes.FirstOrDefault(u => u.Id == id));
+        return Task.FromResult(_pacientes.FirstOrDefault(p => p.Id == id));
     }
 
     public Task<Paciente?> FindByDocumentAsync(string documento)

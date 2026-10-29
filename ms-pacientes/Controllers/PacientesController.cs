@@ -36,7 +36,7 @@ public class PacientesController : ControllerBase
         return Ok(paciente);
     }
 
-    // POST /usuarios
+    // POST /pacientes
     [HttpPost]
     public async Task<ActionResult<Paciente>> Crear(
         [FromBody] CrearPacienteRequest request)
@@ -50,6 +50,6 @@ public class PacientesController : ControllerBase
     }
 
     // Taller 2:
-    // [HttpPut("{id:int}")] para PUT /usuarios/{id}
-    // [HttpDelete("{id:int}")] para DELETE /usuarios/{id}
+    // [HttpPut("{id:int}")] para PUT /pacientes/{id}
+    // [HttpDelete("{id:int}")] para DELETE /pacientes/{id}
 }
