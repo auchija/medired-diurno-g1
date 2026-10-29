@@ -37,7 +37,7 @@ builder.Services
                 detalles = context.ModelState
                     .Where(entry => entry.Value?.Errors.Count > 0)
                     .ToDictionary(
-                        entry => entry.Key,
+                        entry => JsonNamingPolicy.SnakeCaseLower.ConvertName(entry.Key),
                         entry => entry.Value!.Errors
                             .Select(error => error.ErrorMessage)
                             .ToArray())
