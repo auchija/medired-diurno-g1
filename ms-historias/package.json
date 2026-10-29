@@ -1,0 +1,13 @@
+{
+  "name": "ms-historias",
+  "version": "1.0.0",
+  "description": "Microservicio de historias",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/index.js",
+    "dev": "node --watch --env-file-if-exists=.env src/index.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
