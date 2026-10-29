@@ -1,0 +1,28 @@
+@ms_medicos_HostAddress = http://localhost:3003
+
+GET {{ms_medicos_HostAddress}}/health
+Accept: application/json
+
+###
+
+GET {{ms_medicos_HostAddress}}/medicos
+Accept: application/json
+
+###
+
+GET {{ms_medicos_HostAddress}}/medicos/1
+Accept: application/json
+
+###
+
+POST {{ms_medicos_HostAddress}}/medicos
+Content-Type: application/json
+
+{
+  "nombre": "Juan Pérez",
+  "registro_medico": "MS-1234567",
+  "especialidad": "Cardiología",
+  "sede": "Cali"
+}
+
+###
