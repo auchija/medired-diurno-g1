@@ -1,48 +1,66 @@
-# ms-usuarios · Plantilla del Taller 1 (Módulo 3)
+# ms-usuarios · Contrato de la API
 
-Redes y Servicios Multimedia · UAO · Microservicio de **usuarios** de la aplicación,
-con **Node.js + Express** organizado en capas. Es el microservicio común de todos los grupos
-y, en esta versión, la plantilla para construir el suyo: cópienla y adapten **todas** las capas
-a su propia entidad.
-
-Esta es la versión del Taller 1: datos en memoria y tres operaciones. La versión completa
-(MySQL, contraseña cifrada, inicio de sesión y tokens JWT) se entrega en el Taller 3.
+Microservicio de usuarios de la aplicación. Responsable: docente. Puerto: **3001**.
 
 ## Cómo ejecutarlo
 
-Requisitos: Node.js LTS 22 o superior (`node -v`).
+Requisitos: Node.js 22.9 o superior y MySQL 8.
 
+1. Crear la base de datos y su usuario (como root):
+
+```sql
+CREATE DATABASE usuarios_db;
+CREATE USER 'usuarios_user'@'localhost' IDENTIFIED BY 'una-clave-segura';
+GRANT ALL PRIVILEGES ON usuarios_db.* TO 'usuarios_user'@'localhost';
 ```
-npm install                 # descarga Express en node_modules
-copy .env.example .env      # en Windows (en Linux/Mac: cp .env.example .env)
-npm run dev                 # inicia y se reinicia solo al guardar cambios
+
+2. Crear la tabla: en la consola `mysql -u usuarios_user -p usuarios_db` y luego `SOURCE db/schema.sql;`
+3. `npm install`
+4. Copiar `.env.example` como `.env` y ajustar los roles de la empresa y la contraseña de la base de datos.
+5. `npm run dev`
+
+## Representación
+
+```json
+{ "id": 2, "nombre": "Laura Gómez", "email": "laura.gomez@empresa.com", "rol": "administrador", "activo": true }
 ```
 
-Prueben en el navegador: http://localhost:3001/health y http://localhost:3001/usuarios
+## Atributos
 
-## Capas
+| Atributo | Tipo | ¿Obligatorio al crear? | Reglas |
+|---|---|---|---|
+| id | entero | No: lo asigna el servicio | Positivo y único |
+| nombre | texto | Sí | No vacío |
+| email | texto | Sí | Formato válido; en minúsculas; **único** (409) |
+| rol | texto | Sí | Uno de los roles del `.env` |
+| activo | booleano | No (por defecto `true`) | `true` o `false` |
 
-| Archivo | Capa | Responsabilidad |
-|---|---|---|
-| src/index.js | Arranque | Lee PORT y HOST y pone el servidor a escuchar |
-| src/app.js | Configuración | Middlewares, /health, montaje de rutas, manejo de errores |
-| src/routes/usuarios.routes.js | Presentación | Método HTTP + URI → función del controlador |
-| src/controllers/usuarios.controller.js | Presentación | Lee la petición, llama al servicio, arma la respuesta |
-| src/services/usuarios.service.js | Lógica de negocio | Validaciones y reglas (email único); no conoce HTTP ni la base de datos |
-| src/repositories/usuarios.repository.js | Acceso a datos | Guarda y consulta (en memoria en el Taller 1) |
-| src/models/usuario.js | Modelo | Atributos de la entidad y su validación |
-| src/utils/http-error.js | Utilidad | Error con código de estado HTTP |
+## Endpoints
 
-## Endpoints (Taller 1)
+| Operación | Método | URI | Respuesta exitosa | Errores |
+|---|---|---|---|---|
+| Listar | GET | /usuarios | 200 arreglo | — |
+| Filtrar | GET | /usuarios?rol=despacho | 200 arreglo | — |
+| Consultar por lotes | GET | /usuarios?ids=1,3 | 200 arreglo | 400 |
+| Obtener | GET | /usuarios/:id | 200 objeto | 400 · 404 |
+| Crear | POST | /usuarios | 201 objeto + Location | 400 · 409 |
+| Actualizar | PUT | /usuarios/:id | 200 objeto | 400 · 404 · 409 |
+| Eliminar | DELETE | /usuarios/:id | 204 | 400 · 404 |
 
-| Método | URI | Respuesta |
-|---|---|---|
-| GET | /health | 200 `{"servicio":"ms-usuarios","estado":"ok"}` |
-| GET | /usuarios | 200 arreglo de usuarios |
-| GET | /usuarios/:id | 200 usuario · 400 id inválido · 404 no existe |
-| POST | /usuarios | 201 usuario creado · 400 datos inválidos · 409 email repetido |
+Ejemplo para crear:
 
-Ejemplo de cuerpo para POST:
-`{"nombre": "Marta Ríos", "email": "marta.rios@empresa.com", "rol": "despacho"}`
+```json
+{ "nombre": "Marta Ríos", "email": "marta.rios@empresa.com", "rol": "despacho" }
+```
 
-Los roles válidos se configuran en el archivo .env (`ROLES=administrador,despacho,flota`).
+Errores: `{ "error": "mensaje", "detalles": ["..."] }` (detalles solo en errores de validación).
+
+## Relaciones
+
+**Consulto a:** ninguno.
+
+**Me consultan:** ninguno. Cada microservicio verificará el token por su cuenta (semana 3), sin pedirle nada a ms-usuarios.
+
+## Pruebas
+
+Colección de Postman en `docs/ms-usuarios.postman_collection.json` (13 casos).
