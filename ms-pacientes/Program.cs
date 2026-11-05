@@ -8,6 +8,7 @@ Este mismo archivo configura el pipeline de middleware de ASP.NET Core, incluyen
 
 using Microsoft.AspNetCore.Mvc;
 using ms_pacientes.Exceptions;
+using ms_pacientes.Infrastructure.Database;
 using ms_pacientes.Repositories;
 using ms_pacientes.Services;
 using System.Text.Json;
@@ -45,6 +46,7 @@ builder.Services
     });
 
 // Inyección de dependencias.
+builder.Services.AddSingleton<IMySqlConnectionFactory, MySqlConnectionFactory>();
 builder.Services.AddSingleton<IPacientesRepository, PacientesRepository>();
 builder.Services.AddScoped<IPacientesService, PacientesService>();
 
