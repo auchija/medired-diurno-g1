@@ -65,3 +65,21 @@ public sealed class CrearPacienteRequest
         ErrorMessage = "El teléfono debe tener entre 9 y 15 caracteres")]
     public string Telefono { get; init; } = string.Empty;
 }
+
+public sealed class ActualizarPacienteRequest
+{
+    [JsonPropertyName("nombre")]
+    public string? Nombre { get; init; }
+
+    [JsonPropertyName("documento")]
+    public string? Documento { get; init; }
+
+    [JsonPropertyName("fecha_nacimiento")]
+    public DateOnly? FechaNacimiento { get; init; }
+
+    [JsonPropertyName("eps")]
+    public string? Eps { get; init; }
+
+    [JsonPropertyName("telefono")]
+    public string? Telefono { get; init; }
+}

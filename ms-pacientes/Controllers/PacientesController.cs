@@ -21,10 +21,12 @@ public class PacientesController : ControllerBase
     }
 
     // GET /pacientes
+    // GET /pacientes?ids=1,2,3
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<Paciente>>> Listar()
+    public async Task<ActionResult<IReadOnlyList<Paciente>>> Listar(
+    [FromQuery] string? ids = null)
     {
-        var pacientes = await _service.ListarAsync();
+        var pacientes = await _service.ListarAsync(ids);
         return Ok(pacientes);
     }
 
@@ -49,7 +51,21 @@ public class PacientesController : ControllerBase
             nuevo);
     }
 
-    // Taller 2:
-    // [HttpPut("{id:int}")] para PUT /pacientes/{id}
-    // [HttpDelete("{id:int}")] para DELETE /pacientes/{id}
+    // PUT /pacientes/{id}
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<Paciente>> Actualizar(int id, [FromBody] ActualizarPacienteRequest request)
+    {
+        var actualizado = await _service.ActualizarAsync(id, request);
+
+        return Ok(actualizado);
+    }
+
+    // DELETE /pacientes/{id}
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Eliminar(int id)
+    {
+        await _service.EliminarAsync(id);
+
+        return NoContent();
+    }
 }

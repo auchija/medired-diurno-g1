@@ -30,7 +30,7 @@ builder.Services
         options.InvalidModelStateResponseFactory = context =>
             new BadRequestObjectResult(new
             {
-                error = "La solicitud no es válida",
+                error = "Datos inválidos",
                 detalles = context.ModelState
                     .Where(entry => entry.Value?.Errors.Count > 0)
                     .ToDictionary(

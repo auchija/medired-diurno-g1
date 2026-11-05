@@ -1,10 +1,8 @@
-using System.ComponentModel.DataAnnotations;
 using ms_medicos.Exceptions;
 using ms_medicos.Models;
 using ms_medicos.Repositories;
 
 namespace ms_medicos.Services;
-
 
 public sealed class MedicosService : IMedicosService
 {
@@ -15,20 +13,43 @@ public sealed class MedicosService : IMedicosService
         _repo = repo;
     }
 
-    public async Task<IReadOnlyList<Medico>> ListarAsync()
+    public async Task<IReadOnlyList<Medico>> ListarAsync(string? ids = null)
     {
-        var medicos = await _repo.FindAllAsync();
-        return medicos;
+        if (string.IsNullOrWhiteSpace(ids))
+        {
+            return await _repo.FindAllAsync();
+        }
+
+        var partes = ids.Split(',', StringSplitOptions.TrimEntries);
+
+        if (partes.Any(id => !int.TryParse(id, out _)))
+        {
+            throw new ApiException(
+                400,
+                "Todos los IDs deben ser números enteros."
+            );
+        }
+
+        var idsNumericos = partes
+            .Select(int.Parse)
+            .Distinct()
+            .ToList();
+
+        return await _repo.FindByIdsAsync(idsNumericos);
     }
 
     public async Task<Medico> ObtenerPorIdAsync(int id)
     {
         var medico = await _repo.FindByIdAsync(id);
-        
+
         if (medico is null)
         {
-            throw new ApiException(404, $"No existe el médico con id {id}");
+            throw new ApiException(
+                404,
+                $"No existe el médico con id {id}"
+            );
         }
+
         return medico;
     }
 
@@ -41,17 +62,20 @@ public sealed class MedicosService : IMedicosService
         if (existente is not null)
         {
             throw new ApiException(
-                409, 
-                $"Ya existe un médico con el registro médico {registroMedico}");
+                409,
+                $"Ya existe un médico con el registro médico {registroMedico}"
+            );
         }
 
-        // Construir la entidad con los datos permitidos por el contrato
         var medico = new Medico
         {
             Nombre = request.Nombre.Trim(),
             RegistroMedico = registroMedico,
             Especialidad = request.Especialidad.Trim(),
-            Sede = request.Sede ?? throw new ApiException(400, "La sede es obligatoria")
+            Sede = request.Sede ?? throw new ApiException(
+                400,
+                "La sede es obligatoria"
+            )
         };
 
         return await _repo.CreateAsync(medico);

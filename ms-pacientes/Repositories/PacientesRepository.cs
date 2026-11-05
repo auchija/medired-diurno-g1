@@ -19,6 +19,14 @@ public class PacientesRepository : IPacientesRepository
         return Task.FromResult(_pacientes.ToList());
     }
 
+    public Task<IReadOnlyList<Paciente>> FindByIdsAsync(
+        IReadOnlyCollection<int> ids)
+    {
+        IReadOnlyList<Paciente> resultado = _pacientes.Where(m => ids.Contains(m.Id)).ToList();
+
+        return Task.FromResult(resultado);
+    }
+
 
     public Task<Paciente?> FindByIdAsync(int id)
     {
@@ -45,4 +53,42 @@ public class PacientesRepository : IPacientesRepository
         return Task.FromResult(nuevo);
     }
 
+    public Task<Paciente?> UpdateAsync(int id, Paciente paciente)
+    {
+        var pacienteExistente = _pacientes.FirstOrDefault(p => p.Id == id);
+
+        if (pacienteExistente == null)
+        {
+            return Task.FromResult<Paciente?>(null);
+        }
+
+        var pacienteActualizado = new Paciente
+        {
+            Id = pacienteExistente.Id,
+            Nombre = paciente.Nombre,
+            Documento = paciente.Documento,
+            FechaNacimiento = paciente.FechaNacimiento,
+            Eps = paciente.Eps,
+            Telefono = paciente.Telefono
+        };
+
+        var index = _pacientes.IndexOf(pacienteExistente);
+        _pacientes.RemoveAt(index);
+        _pacientes.Insert(index, pacienteActualizado);
+
+        return Task.FromResult((Paciente?)pacienteActualizado);
+    }
+
+    public Task<bool> RemoveAsync(int id)
+    {
+        var pacienteEncontrado = _pacientes.FirstOrDefault(p => p.Id == id);
+
+        if (pacienteEncontrado == null)
+        {
+            return Task.FromResult(false);
+        }
+
+        _pacientes.Remove(pacienteEncontrado);
+        return Task.FromResult(true);
+    }
 }

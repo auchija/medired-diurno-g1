@@ -21,10 +21,12 @@ public class MedicosController : ControllerBase
     }
 
     // GET /medicos
+    // GET /medicos?ids=1,2,3
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<Medico>>> Listar()
+    public async Task<ActionResult<IReadOnlyList<Medico>>> Listar(
+    [FromQuery] string? ids = null)
     {
-        var medicos = await _service.ListarAsync();
+        var medicos = await _service.ListarAsync(ids);
         return Ok(medicos);
     }
 
