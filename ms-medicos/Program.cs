@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ms_medicos.Exceptions;
+using ms_medicos.Infrastructure.Database;
 using ms_medicos.Repositories;
 using ms_medicos.Services;
 using System.Text.Json.Serialization;
@@ -22,7 +23,7 @@ builder.Services
             JsonNamingPolicy.SnakeCaseLower;
 
         options.JsonSerializerOptions.Converters.Add(
-            new JsonStringEnumConverter()
+            new JsonStringEnumConverter(allowIntegerValues: false)
         );
     })
     .ConfigureApiBehaviorOptions(options =>
@@ -42,6 +43,7 @@ builder.Services
     });
 
 // Inyección de dependencias.
+builder.Services.AddSingleton<IMySqlConnectionFactory, MySqlConnectionFactory>();
 builder.Services.AddSingleton<IMedicosRepository, MedicosRepository>();
 builder.Services.AddScoped<IMedicosService, MedicosService>();
 

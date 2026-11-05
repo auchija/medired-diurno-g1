@@ -7,4 +7,7 @@ public interface IMedicosService
     Task<IReadOnlyList<Medico>> ListarAsync(string? ids = null);
     Task<Medico> ObtenerPorIdAsync(int id);
     Task<Medico> CrearAsync(CrearMedicoRequest request);
+    Task<Medico> ActualizarAsync(int id, ActualizarMedicoRequest request);
+
+    Task<bool> EliminarAsync(int id);
 }

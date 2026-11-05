@@ -50,4 +50,22 @@ public class MedicosController : ControllerBase
             new { id = nuevo.Id },
             nuevo);
     }
+
+    // PUT /medicos/{id}
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<Medico>> Actualizar(int id, [FromBody] ActualizarMedicoRequest request)
+    {
+        var actualizado = await _service.ActualizarAsync(id, request);
+
+        return Ok(actualizado);
+    }
+
+    // DELETE /medicos/{id}
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Eliminar(int id)
+    {
+        await _service.EliminarAsync(id);
+
+        return NoContent();
+    }
 }
