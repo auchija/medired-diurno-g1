@@ -1,97 +1,76 @@
-﻿# ms-historias · MediRed IPS (Módulo 3)
+﻿# ms-historias · Contrato de la API
 
-Redes y Servicios Multimedia · UAO · Grupo 1, jornada diurna.
-
-MediRed IPS es una clínica con sedes en Bogotá, Cali y Medellín. Su aplicación web está
-construida con microservicios REST en Node.js + Express, organizados en capas. Este
-microservicio gestiona las **historias clínicas** de los pacientes.
-
-Responsable: Miguel Ángel Jiménez (chanclaxx) · Puerto: **3005**
-
-Esta es la versión del Taller 1: datos en memoria y tres operaciones. En el Taller 2 se
-completa el CRUD con persistencia en MySQL, y en el Taller 3 se integra con ms-pacientes
-y ms-medicos.
-
-## Integrantes
-
-| Integrante | Usuario de GitHub | Microservicio a cargo |
-|---|---|---|
-| Alejandro González | auchija | ms-citas |
-| Sebastián Montaño Reyes | SebasMontanoUAO | ms-pacientes, ms-medicos |
-| Miguel Ángel Jiménez | chanclaxx | ms-historias |
-
-## Microservicios
-
-| Carpeta | Entidad | Responsable | Puerto | Depende de |
-|---|---|---|---|---|
-| ms-usuarios | Usuario | Docente | 3001 | — |
-| ms-pacientes | Paciente | Sebastián Montaño Reyes | 3002 | — |
-| ms-medicos | Médico | Sebastián Montaño Reyes | 3003 | — |
-| ms-citas | Cita | Alejandro González | 3004 | ms-pacientes, ms-medicos |
-| ms-historias | Historia clínica | Miguel Ángel Jiménez | 3005 | ms-pacientes, ms-medicos |
-
-## Estructura del repositorio
-
-- `ms-usuarios/`: plantilla entregada por la docente; nadie la modifica.
-- `ms-pacientes/`, `ms-medicos/`, `ms-citas/`, `ms-historias/`: un microservicio por
-  integrante; cada uno trabaja solo en su carpeta.
-- `frontend/`: interfaz web (desde la semana 2).
-- `deploy/`: archivos de despliegue en servidor1 y servidor2 (Taller 3).
+Microservicio de **historias clínicas** de MediRed IPS. Responsable: Miguel Ángel Jiménez (chanclaxx). Puerto: **3005**.
 
 ## Cómo ejecutarlo
 
-Requisitos: Node.js 22 o superior (`node -v`). Desde la carpeta `ms-historias`:
+Requisitos: Node.js 22.9 o superior y MySQL 8.
 
+1. Crear la base de datos y su usuario (como root, con `mysql -u root -p`):
+
+```sql
+CREATE DATABASE historias_db;
+CREATE USER 'historias_user'@'localhost' IDENTIFIED BY 'una-clave-segura';
+GRANT ALL PRIVILEGES ON historias_db.* TO 'historias_user'@'localhost';
 ```
-npm install                 # descarga Express en node_modules
-copy .env.example .env      # en Windows (en Linux/Mac: cp .env.example .env)
-npm run dev                 # inicia y se reinicia solo al guardar cambios
+
+2. Crear la tabla con los 3 registros iniciales: desde la carpeta `ms-historias`, `mysql -u historias_user -p historias_db` y luego `SOURCE db/schema.sql;`
+3. `npm install`
+4. Copiar `.env.example` como `.env` (`copy .env.example .env` en Windows) y poner la contraseña de la base de datos.
+5. `npm run dev` → debe decir `ms-historias escuchando en http://127.0.0.1:3005`
+
+### Variables del .env
+
+| Variable | Valor | Para qué |
+|---|---|---|
+| PORT | 3005 | Puerto del microservicio |
+| HOST | 127.0.0.1 | Solo acepta conexiones del mismo equipo (el gateway) |
+| DB_HOST / DB_PORT | localhost / 3306 | Servidor MySQL (en el Taller 3: servidor1) |
+| DB_NAME | historias_db | Base de datos propia del microservicio |
+| DB_USER / DB_PASSWORD | historias_user / ... | Usuario con permisos solo sobre historias_db |
+
+## Representación
+
+```json
+{
+  "id": 1,
+  "paciente_id": 1,
+  "medico_id": 1,
+  "fecha": "2025-02-10",
+  "motivo_consulta": "Dolor de cabeza persistente",
+  "diagnostico": "Migraña",
+  "tratamiento": "Acetaminofén 500 mg cada 8 horas por 3 días"
+}
 ```
 
-Prueben en el navegador: http://127.0.0.1:3005/health y http://127.0.0.1:3005/historias
+## Atributos
 
-## Entidad Historia clínica
+| Atributo | Tipo | ¿Obligatorio al crear? | Reglas |
+|---|---|---|---|
+| id | entero | No: lo asigna el servicio | Positivo y único |
+| paciente_id | entero | Sí | Entero positivo; referencia a ms-pacientes |
+| medico_id | entero | Sí | Entero positivo; referencia a ms-medicos |
+| fecha | texto | Sí | Formato `AAAA-MM-DD`, fecha real; **no puede ser futura** (400) |
+| motivo_consulta | texto | Sí | No vacío |
+| diagnostico | texto | Sí | No vacío |
+| tratamiento | texto | Sí | No vacío |
 
-| Atributo | Tipo | Obligatorio | Valores / formato | Referencia a |
-|---|---|---|---|---|
-| id | entero | Lo asigna el sistema | 1, 2, 3... | — |
-| paciente_id | entero | Sí | Entero positivo | ms-pacientes |
-| medico_id | entero | Sí | Entero positivo | ms-medicos |
-| fecha | texto | Sí | `AAAA-MM-DD` (ej. `2025-02-10`) | — |
-| motivo_consulta | texto | Sí | No vacío | — |
-| diagnostico | texto | Sí | No vacío | — |
-| tratamiento | texto | Sí | No vacío | — |
+**Regla de negocio** (se aplica al crear y al actualizar): la `fecha` no puede ser futura → **400**. Un paciente puede tener varias historias con el mismo médico el mismo día.
 
-**Reglas de negocio:**
-- No puede existir otra historia con el mismo `paciente_id` + `medico_id` + `fecha` → `409 Conflict`.
-- La fecha no puede ser futura → `400 Bad Request`.
+## Endpoints
 
-La historia guarda solo `paciente_id` y `medico_id`, nunca una copia del nombre del paciente
-o del médico. En el Taller 3 esos datos se consultan por REST a ms-pacientes y ms-medicos.
+| Operación | Método | URI | Cuerpo | Respuesta exitosa | Errores |
+|---|---|---|---|---|---|
+| Listar | GET | /historias | — | 200 arreglo | — |
+| Filtrar | GET | /historias?paciente_id=1 · ?medico_id=2 | — | 200 arreglo filtrado | 400 filtro inválido |
+| Obtener | GET | /historias/:id | — | 200 objeto | 400 id inválido · 404 |
+| Crear | POST | /historias | JSON sin id | 201 objeto + cabecera Location | 400 |
+| Actualizar | PUT | /historias/:id | JSON completo sin id | 200 objeto actualizado | 400 · 404 |
+| Eliminar | DELETE | /historias/:id | — | 204 sin cuerpo | 400 id inválido · 404 |
 
-## Capas
+Los dos filtros se pueden combinar: `/historias?paciente_id=1&medico_id=1`.
 
-| Archivo | Capa | Responsabilidad |
-|---|---|---|
-| src/index.js | Arranque | Lee PORT y HOST y pone el servidor a escuchar |
-| src/app.js | Configuración | Middlewares, /health, montaje de rutas, manejo de errores |
-| src/routes/historias.routes.js | Presentación | Método HTTP + URI → función del controlador |
-| src/controllers/historias.controller.js | Presentación | Lee la petición, llama al servicio, arma la respuesta |
-| src/services/historias.service.js | Lógica de negocio | Reglas de fecha futura y duplicado; no conoce HTTP ni la base de datos |
-| src/repositories/historias.repository.js | Acceso a datos | Guarda y consulta (en memoria en el Taller 1) |
-| src/models/historia.js | Modelo | Atributos de la historia y su validación |
-| src/utils/http-error.js | Utilidad | Error con código de estado HTTP |
-
-## Endpoints (Taller 1)
-
-| Método | URI | Respuesta |
-|---|---|---|
-| GET | /health | 200 `{"servicio":"ms-historias","estado":"ok"}` |
-| GET | /historias | 200 arreglo de historias |
-| GET | /historias/:id | 200 la historia · 404 si no existe · 400 si el id no es válido |
-| POST | /historias | 201 la historia creada · 400 datos inválidos o fecha futura · 409 duplicado |
-
-Ejemplo de cuerpo para `POST /historias`:
+Ejemplo para crear o actualizar:
 
 ```json
 {
@@ -104,5 +83,29 @@ Ejemplo de cuerpo para `POST /historias`:
 }
 ```
 
-Si faltan datos o son inválidos, la respuesta es
-`400 {"error": "Datos inválidos", "detalles": [...]}`.
+Errores: `{ "error": "mensaje", "detalles": ["..."] }` (detalles solo en errores de validación). Ejemplo:
+
+```json
+{ "error": "Datos inválidos", "detalles": ["diagnostico es obligatorio"] }
+```
+
+## Relaciones
+
+La historia guarda solo `paciente_id` y `medico_id`, nunca una copia del nombre del paciente o del médico. Las columnas no tienen FOREIGN KEY porque esas tablas viven en otras bases de datos.
+
+**Consulto a** (se implementa en la semana 2):
+
+| Atributo | Microservicio consultado | Para validar (al crear y actualizar) | Para componer (al consultar) | Datos que usa |
+|---|---|---|---|---|
+| paciente_id | ms-pacientes | GET /pacientes/:id | GET /pacientes?ids=… | id, nombre |
+| medico_id | ms-medicos | GET /medicos/:id | GET /medicos?ids=… | id, nombre, especialidad |
+
+- Si el paciente o el médico no existe → **400**.
+- Si el otro servicio no responde → **503**.
+- Al listar, si no se pueden obtener los datos relacionados, el objeto llega en `null` con un aviso.
+
+**Me consultan:** ninguno.
+
+## Pruebas
+
+Colección de Postman en `docs/ms-historias.postman_collection.json` (12 casos: del 1 al 13 sin el 3, porque la consulta por lotes no aplica, ya que ningún servicio consulta historias). El caso 9 viola la regla propia con una fecha futura (400).
