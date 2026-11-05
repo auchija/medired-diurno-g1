@@ -13,9 +13,17 @@ const historias = [
 ];
 let siguienteId = 4;
 
-async function findAll() {
-  return historias;
+async function findAll(filtros = {}) {
+  let resultado = historias;
+  if (filtros.paciente_id) {
+    resultado = resultado.filter((h) => h.paciente_id === filtros.paciente_id);
+  }
+  if (filtros.medico_id) {
+    resultado = resultado.filter((h) => h.medico_id === filtros.medico_id);
+  }
+  return resultado;
 }
+
 
 async function findById(id) {
   return historias.find((h) => h.id === id) || null;
@@ -33,4 +41,18 @@ async function create(historia) {
   return nueva;
 }
 
-module.exports = { findAll, findById, findByPacienteMedicoFecha, create };
+async function update(id, historia) {
+  const i = historias.findIndex((h) => h.id === id);
+  if (i === -1) return null;
+  historias[i] = { id, ...historia };
+  return historias[i];
+}
+
+async function remove(id) {
+  const i = historias.findIndex((h) => h.id === id);
+  if (i === -1) return false;
+  historias.splice(i, 1);
+  return true;
+}
+
+module.exports = { findAll, findById, findByPacienteMedicoFecha, create, update, remove };

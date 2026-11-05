@@ -12,10 +12,22 @@ function leerId(req) {
   return id;
 }
 
+function leerFiltro(req, nombre) {
+  if (req.query[nombre] === undefined) return undefined;
+  const valor = Number(req.query[nombre]);
+  if (!Number.isInteger(valor) || valor <= 0) throw new HttpError(400, `${nombre} debe ser un entero positivo`);
+  return valor;
+}
+
 async function listar(req, res) {
-  const historias = await service.listar();
+  const filtros = {
+    paciente_id: leerFiltro(req, 'paciente_id'),
+    medico_id: leerFiltro(req, 'medico_id'),
+  };
+  const historias = await service.listar(filtros);
   res.status(200).json(historias);
 }
+
 
 async function obtener(req, res) {
   const historia = await service.obtener(leerId(req));
@@ -27,4 +39,14 @@ async function crear(req, res) {
   res.status(201).location(`${req.baseUrl}/${nueva.id}`).json(nueva);
 }
 
-module.exports = { listar, obtener, crear };
+async function actualizar(req, res) {
+  const actualizada = await service.actualizar(leerId(req), req.body);
+  res.status(200).json(actualizada);
+}
+
+async function eliminar(req, res) {
+  await service.eliminar(leerId(req));
+  res.status(204).end();                  
+}
+
+module.exports = { listar, obtener, crear, actualizar, eliminar };
