@@ -1,0 +1,8 @@
+$kind: http-request
+url: http://127.0.0.1:3003/medicos
+method: POST
+body:
+  type: json
+  content: '{ "nombre": "Pedro Navaja", "registro_medico": "RM-FICTICIO-004", "especialidad": "Cirujano", "sede": "Bogotá" }'
+examples: .resources/crear medico.resources/examples
+order: 5000

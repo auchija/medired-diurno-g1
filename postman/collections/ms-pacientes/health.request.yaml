@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://127.0.0.1:3002/health
+method: GET
+order: 1000

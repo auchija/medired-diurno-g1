@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://127.0.0.1:3003/medicos/45
+method: GET
+order: 4000

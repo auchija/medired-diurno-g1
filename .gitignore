@@ -8,6 +8,9 @@
 .env.*
 !.env.example
 
+# appsettings filess
+appsettings.json
+
 # User-specific files
 *.rsuser
 *.suo
