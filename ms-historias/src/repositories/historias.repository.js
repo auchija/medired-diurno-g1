@@ -26,13 +26,6 @@ async function findById(id) {
 }
 
 
-async function findByPacienteMedicoFecha(paciente_id, medico_id, fecha) {
-  const [filas] = await pool.query(
-    'SELECT * FROM historias WHERE paciente_id = ? AND medico_id = ? AND fecha = ?',
-    [paciente_id, medico_id, fecha]);
-  return filas.length > 0 ? filas[0] : null;
-}
-
 async function create(historia) {
   const [resultado] = await pool.query(
     'INSERT INTO historias (paciente_id, medico_id, fecha, motivo_consulta, diagnostico, tratamiento) VALUES (?, ?, ?, ?, ?, ?)',
@@ -56,4 +49,4 @@ async function remove(id) {
   return resultado.affectedRows > 0;
 }
 
-module.exports = { findAll, findById, findByPacienteMedicoFecha, create, update, remove };
+module.exports = { findAll, findById, create, update, remove };

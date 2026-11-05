@@ -8,8 +8,7 @@ CREATE TABLE historias (
   fecha            DATE         NOT NULL,
   motivo_consulta  VARCHAR(255) NOT NULL,
   diagnostico      TEXT         NOT NULL,
-  tratamiento      TEXT         NOT NULL,
-  UNIQUE (paciente_id, medico_id, fecha)    
+  tratamiento      TEXT         NOT NULL
 );
 
 INSERT INTO historias (paciente_id, medico_id, fecha, motivo_consulta, diagnostico, tratamiento) VALUES
