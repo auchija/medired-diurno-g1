@@ -2,13 +2,21 @@
 // Configuración de la aplicación Express.
 // Aquí se registran los middlewares, las rutas y el manejo de errores.
 // =====================================================================
-const express = require('express');
-const historiasRoutes = require('./routes/historias.routes');
 
+const historiasRoutes = require('./routes/historias.routes');
+const express = require('express');
+const cors = require('cors');
 const app = express();
 
 
+app.use(cors());
+
 app.use(express.json());
+
+app.use((req, res, next) => {
+  console.log(`${new Date().toLocaleTimeString()} ${req.method} ${req.originalUrl}`);
+  next();
+});
 
 
 app.get('/health', (req, res) => {
