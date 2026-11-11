@@ -2,19 +2,22 @@
 // CAPA DE SERVICIO (lógica de negocio)
 // Aplica las reglas del negocio y las validaciones.
 // No sabe nada de HTTP (req/res) ni de cómo se guardan los datos.
+// Para pacientes y médicos usa los clientes REST (src/clients).
 // =====================================================================
 const repo = require('../repositories/citas.repository');
 const { validarCita, construirCita } = require('../models/cita');
 const HttpError = require('../utils/http-error');
+const pacientesClient = require('../clients/pacientes.client');
+const medicosClient = require('../clients/medicos.client');
 
-async function listar(filtros) {
-  return repo.findAll(filtros);
-}
-
-async function obtener(id) {
-  const cita = await repo.findById(id);
-  if (!cita) throw new HttpError(404, `No existe la cita con id ${id}`);
-  return cita;
+// Relación: el paciente y el médico referenciados deben existir en sus microservicios
+async function validarReferencias(cita, token) {
+  if (!(await pacientesClient.existePaciente(cita.paciente_id, token))) {
+    throw new HttpError(400, `No existe el paciente con id ${cita.paciente_id}`);
+  }
+  if (!(await medicosClient.existeMedico(cita.medico_id, token))) {
+    throw new HttpError(400, `No existe el médico con id ${cita.medico_id}`);
+  }
 }
 
 // Reglas de negocio comunes a crear y actualizar.
@@ -39,19 +42,58 @@ async function aplicarReglas(cita, excluirId = null) {
   }
 }
 
-async function crear(datos) {
+// Agrega a cada cita su objeto paciente y su objeto médico,
+// con UNA sola consulta a ms-pacientes y UNA sola a ms-medicos
+async function componer(citas, token) {
+  const idsPacientes = [...new Set(citas.map((c) => c.paciente_id))];
+  const idsMedicos = [...new Set(citas.map((c) => c.medico_id))];
+
+  // Las dos consultas se hacen al mismo tiempo
+  const [pacientes, medicos] = await Promise.all([
+    pacientesClient.pacientesPorIds(idsPacientes, token),
+    medicosClient.medicosPorIds(idsMedicos, token),
+  ]);
+
+  // Degradación controlada: si un servicio no responde, su objeto sale en null con un aviso
+  const avisos = [];
+  if (!pacientes) avisos.push('ms-pacientes no disponible');
+  if (!medicos) avisos.push('ms-medicos no disponible');
+
+  return citas.map((c) => {
+    const compuesta = {
+      ...c,
+      paciente: pacientes ? pacientes.get(c.paciente_id) || null : null,
+      medico: medicos ? medicos.get(c.medico_id) || null : null,
+    };
+    if (avisos.length > 0) compuesta.aviso = avisos.join('; ');
+    return compuesta;
+  });
+}
+
+async function listar(filtros, token) {
+  return componer(await repo.findAll(filtros), token);
+}
+
+async function obtener(id, token) {
+  const cita = await repo.findById(id);
+  if (!cita) throw new HttpError(404, `No existe la cita con id ${id}`);
+  const [compuesta] = await componer([cita], token);
+  return compuesta;
+}
+
+async function crear(datos, token) {
   const errores = validarCita(datos);
   if (errores.length > 0) throw new HttpError(400, 'Datos inválidos', errores);
 
   const cita = construirCita(datos);
   await aplicarReglas(cita);
-
-  // Semana 2: validar por REST que paciente_id exista en ms-pacientes y
-  // medico_id en ms-medicos (400 si no existe, 503 si el servicio no responde).
-  return repo.create(cita);
+  await validarReferencias(cita, token);
+  const nueva = await repo.create(cita);
+  const [compuesta] = await componer([nueva], token);
+  return compuesta;
 }
 
-async function actualizar(id, datos) {
+async function actualizar(id, datos, token) {
   const errores = validarCita(datos);
   if (errores.length > 0) throw new HttpError(400, 'Datos inválidos', errores);
 
@@ -59,7 +101,10 @@ async function actualizar(id, datos) {
 
   const cita = construirCita(datos);
   await aplicarReglas(cita, id);
-  return repo.update(id, cita);
+  await validarReferencias(cita, token);
+  const actualizada = await repo.update(id, cita);
+  const [compuesta] = await componer([actualizada], token);
+  return compuesta;
 }
 
 async function eliminar(id) {
