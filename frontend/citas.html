@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/medired.css">
+  <title>MediRed · Agenda de citas</title>
+</head>
+<body>
+  <!-- Pantallas de citas (responsable: Alejandro González · ms-citas) -->
+  <div class="aplicacion">
+    <aside class="lateral" id="lateral"></aside>
+    <div class="principal">
+      <header class="superior" id="superior"></header>
+      <main class="contenido">
+        <div class="aviso" id="aviso-rol" hidden></div>
+
+        <section class="panel">
+          <div class="herramientas">
+            <input class="campo-busqueda" id="filtro-texto" type="search" placeholder="Filtrar por paciente o médico" aria-label="Filtrar por paciente o médico">
+            <div class="segmentado" id="filtros-estado" role="group" aria-label="Filtrar por estado"></div>
+            <select class="selector" id="filtro-sede" aria-label="Filtrar por sede"></select>
+            <div class="empuje"></div>
+            <button class="boton" id="nueva" hidden></button>
+          </div>
+          <div class="tabla-contenedor">
+            <table class="tabla">
+              <thead>
+                <tr><th>Fecha y hora</th><th>Paciente</th><th>Médico</th><th>Sede</th><th>Estado</th><th id="col-acciones"></th></tr>
+              </thead>
+              <tbody id="filas"></tbody>
+            </table>
+          </div>
+          <div class="pie-tabla">
+            <span id="conteo"></span>
+            <button class="boton-enlace" id="reiniciar" hidden>Restablecer datos de demostración</button>
+          </div>
+        </section>
+      </main>
+      <footer class="pie-app">© 2026 MediRed IPS · Sistema de gestión clínica</footer>
+    </div>
+  </div>
+  <div id="mensajes"></div>
+  <dialog id="dialogo"></dialog>
+
+  <script src="js/config.js"></script>
+  <script src="js/iconos.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/sesion.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/citas.js"></script>
+</body>
+</html>

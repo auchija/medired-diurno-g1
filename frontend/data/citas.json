@@ -1,0 +1,18 @@
+[
+  { "id": 1, "paciente_id": 1, "medico_id": 3, "fecha_hora": "2026-12-01T11:00", "sede": "Bogotá", "estado": "programada",
+    "paciente": { "id": 1, "nombre": "Lucía Gómez" },
+    "medico": { "id": 3, "nombre": "Andrés Mendoza", "especialidad": "Cardiología" } },
+  { "id": 2, "paciente_id": 2, "medico_id": 2, "fecha_hora": "2026-10-20T10:30", "sede": "Cali", "estado": "atendida",
+    "paciente": { "id": 2, "nombre": "Mateo Rodríguez" },
+    "medico": { "id": 2, "nombre": "Mariana Torres", "especialidad": "Pediatría" } },
+  { "id": 3, "paciente_id": 1, "medico_id": 1, "fecha_hora": "2026-12-02T14:00", "sede": "Medellín", "estado": "cancelada",
+    "paciente": { "id": 1, "nombre": "Lucía Gómez" },
+    "medico": { "id": 1, "nombre": "Carlos Ruiz", "especialidad": "Medicina general" } },
+  { "id": 4, "paciente_id": 3, "medico_id": 1, "fecha_hora": "2026-12-01T09:00", "sede": "Cali", "estado": "programada",
+    "paciente": { "id": 3, "nombre": "Valentina Pérez" },
+    "medico": { "id": 1, "nombre": "Carlos Ruiz", "especialidad": "Medicina general" } },
+  { "id": 5, "paciente_id": 2, "medico_id": 3, "fecha_hora": "2026-12-05T08:00", "sede": "Medellín", "estado": "programada",
+    "paciente": { "id": 2, "nombre": "Mateo Rodríguez" },
+    "medico": null,
+    "aviso": "ms-medicos no disponible" }
+]
