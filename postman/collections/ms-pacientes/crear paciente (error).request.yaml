@@ -1,7 +1,0 @@
-$kind: http-request
-url: http://127.0.0.1:3002/pacientes
-method: POST
-body:
-  type: json
-  content: '{ "nombre": "Juan Alimaña", "documento": "DOC-FICTICIO-004", "eps": "Salud Ejemplo", "telefono": "3000000004" }'
-order: 6000

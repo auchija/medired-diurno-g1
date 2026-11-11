@@ -1,7 +1,0 @@
-$kind: http-request
-url: http://127.0.0.1:3003/medicos
-method: POST
-body:
-  type: json
-  content: ""
-order: 6000
