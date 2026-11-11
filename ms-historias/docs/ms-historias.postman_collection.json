@@ -1,0 +1,1140 @@
+{
+  "info": {
+    "_postman_id": "33c8795a-fa17-490d-b65c-d670b8548899",
+    "name": "ms-historias",
+    "description": "Casos de prueba del Taller 2 para ms-historias (puerto 3005). Requiere ms-usuarios (3001), ms-pacientes (3002) y ms-medicos (3003) corriendo. Ejecutar en orden: los casos 00 hacen login y guardan los tokens; la colección usa el token del administrador salvo donde se indica. Los casos 23 y 24 se corren con ms-pacientes detenido. El caso 03 (consulta por lotes) no aplica: ningún servicio consulta historias.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base",
+      "value": "http://127.0.0.1:3005"
+    },
+    {
+      "key": "usuarios",
+      "value": "http://127.0.0.1:3001"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "token_medico",
+      "value": ""
+    },
+    {
+      "key": "token_admisiones",
+      "value": ""
+    },
+    {
+      "key": "id_nuevo",
+      "value": "4"
+    },
+    {
+      "key": "id_relacion",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "00a · Login administrador → 200",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{usuarios}}/usuarios/login",
+          "host": [
+            "{{usuarios}}"
+          ],
+          "path": [
+            "usuarios",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@empresa.com\",\n  \"password\": \"Admin2026*\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "if (pm.response.code === 200) { pm.collectionVariables.set(\"token\", pm.response.json().token); }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "00b · Crear usuario medico (409 si ya existe) → 201/409",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{usuarios}}/usuarios",
+          "host": [
+            "{{usuarios}}"
+          ],
+          "path": [
+            "usuarios"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Carlos Ruiz\",\n  \"email\": \"carlos.ruiz@medired.com\",\n  \"password\": \"Medico2026*\",\n  \"rol\": \"medico\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 201 o 409\", function () { pm.expect(pm.response.code).to.be.oneOf([201, 409]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "00c · Login medico → 200",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{usuarios}}/usuarios/login",
+          "host": [
+            "{{usuarios}}"
+          ],
+          "path": [
+            "usuarios",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"carlos.ruiz@medired.com\",\n  \"password\": \"Medico2026*\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "if (pm.response.code === 200) { pm.collectionVariables.set(\"token_medico\", pm.response.json().token); }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "00d · Crear usuario admisiones (409 si ya existe) → 201/409",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{usuarios}}/usuarios",
+          "host": [
+            "{{usuarios}}"
+          ],
+          "path": [
+            "usuarios"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Ana Torres\",\n  \"email\": \"ana.torres@medired.com\",\n  \"password\": \"Admisiones2026*\",\n  \"rol\": \"admisiones\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 201 o 409\", function () { pm.expect(pm.response.code).to.be.oneOf([201, 409]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "00e · Login admisiones → 200",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{usuarios}}/usuarios/login",
+          "host": [
+            "{{usuarios}}"
+          ],
+          "path": [
+            "usuarios",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"ana.torres@medired.com\",\n  \"password\": \"Admisiones2026*\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "if (pm.response.code === 200) { pm.collectionVariables.set(\"token_admisiones\", pm.response.json().token); }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "01 · Listar todos → 200",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "pm.test(\"Devuelve al menos 3 historias\", function () { pm.expect(pm.response.json().length).to.be.at.least(3); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 · Filtrar por paciente → 200",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/historias?paciente_id=1",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ],
+          "query": [
+            {
+              "key": "paciente_id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "pm.test(\"Todas son del paciente 1\", function () { pm.response.json().forEach(function (h) { pm.expect(h.paciente_id).to.eql(1); }); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 · Obtener existente → 200",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/historias/1",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias",
+            "1"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "pm.test(\"Es la historia 1\", function () { pm.expect(pm.response.json().id).to.eql(1); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 · Obtener inexistente → 404",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/historias/99",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias",
+            "99"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 404\", function () { pm.expect(pm.response.code).to.be.oneOf([404]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 · Obtener con id no numérico → 400",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/historias/abc",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias",
+            "abc"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 400\", function () { pm.expect(pm.response.code).to.be.oneOf([400]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 · Crear válido → 201",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 2,\n  \"medico_id\": 1,\n  \"fecha\": \"2025-10-20\",\n  \"motivo_consulta\": \"Dolor abdominal\",\n  \"diagnostico\": \"Gastritis\",\n  \"tratamiento\": \"Omeprazol 20 mg en ayunas por 14 días\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 201\", function () { pm.expect(pm.response.code).to.be.oneOf([201]); });",
+              "pm.test(\"Trae el id nuevo\", function () { pm.expect(pm.response.json().id).to.be.a('number'); });",
+              "if (pm.response.code === 201) { pm.collectionVariables.set('id_nuevo', pm.response.json().id); }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 · Crear sin datos obligatorios → 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 2,\n  \"medico_id\": 1,\n  \"fecha\": \"2025-10-20\",\n  \"motivo_consulta\": \"Dolor abdominal\",\n  \"tratamiento\": \"Omeprazol 20 mg en ayunas por 14 días\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 400\", function () { pm.expect(pm.response.code).to.be.oneOf([400]); });",
+              "pm.test(\"Indica el campo que falta\", function () { pm.expect(pm.response.json().detalles).to.include('diagnostico es obligatorio'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 · Crear violando la regla propia (fecha futura) → 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 2,\n  \"medico_id\": 1,\n  \"fecha\": \"2099-01-01\",\n  \"motivo_consulta\": \"Dolor abdominal\",\n  \"diagnostico\": \"Gastritis\",\n  \"tratamiento\": \"Omeprazol 20 mg en ayunas por 14 días\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 400\", function () { pm.expect(pm.response.code).to.be.oneOf([400]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 · Actualizar existente → 200",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/historias/{{id_nuevo}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias",
+            "{{id_nuevo}}"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 2,\n  \"medico_id\": 1,\n  \"fecha\": \"2025-10-20\",\n  \"motivo_consulta\": \"Dolor abdominal\",\n  \"diagnostico\": \"Gastritis crónica\",\n  \"tratamiento\": \"Omeprazol 20 mg en ayunas por 30 días y dieta blanda\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "pm.test(\"Guardó el diagnóstico nuevo\", function () { pm.expect(pm.response.json().diagnostico).to.eql('Gastritis crónica'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 · Actualizar inexistente → 404",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/historias/99",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias",
+            "99"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 3,\n  \"medico_id\": 3,\n  \"fecha\": \"2025-09-01\",\n  \"motivo_consulta\": \"Control\",\n  \"diagnostico\": \"Sin hallazgos\",\n  \"tratamiento\": \"Ninguno\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 404\", function () { pm.expect(pm.response.code).to.be.oneOf([404]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 · Eliminar existente → 204",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/historias/{{id_nuevo}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias",
+            "{{id_nuevo}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 204\", function () { pm.expect(pm.response.code).to.be.oneOf([204]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13 · Eliminar otra vez → 404",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/historias/{{id_nuevo}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias",
+            "{{id_nuevo}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 404\", function () { pm.expect(pm.response.code).to.be.oneOf([404]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14 · Listar sin token → 401",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 401\", function () { pm.expect(pm.response.code).to.be.oneOf([401]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "15 · Listar con un token alterado → 401",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}x"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 401\", function () { pm.expect(pm.response.code).to.be.oneOf([401]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "16 · Listar con token de admisiones → 200",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token_admisiones}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "17 · Crear con token de admisiones → 403",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 1,\n  \"medico_id\": 1,\n  \"fecha\": \"2025-10-20\",\n  \"motivo_consulta\": \"Control general\",\n  \"diagnostico\": \"Sin hallazgos\",\n  \"tratamiento\": \"Seguimiento en 6 meses\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token_admisiones}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 403\", function () { pm.expect(pm.response.code).to.be.oneOf([403]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "18 · Crear con token de medico → 201",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 1,\n  \"medico_id\": 1,\n  \"fecha\": \"2025-10-20\",\n  \"motivo_consulta\": \"Consulta registrada por el médico\",\n  \"diagnostico\": \"Sin hallazgos\",\n  \"tratamiento\": \"Seguimiento en 6 meses\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token_medico}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 201\", function () { pm.expect(pm.response.code).to.be.oneOf([201]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "19 · Relación: crear con paciente y médico que existen (trae paciente y medico) → 201",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 2,\n  \"medico_id\": 3,\n  \"fecha\": \"2025-10-20\",\n  \"motivo_consulta\": \"Dolor en el pecho\",\n  \"diagnostico\": \"Dolor muscular\",\n  \"tratamiento\": \"Reposo y analgésico\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 201\", function () { pm.expect(pm.response.code).to.be.oneOf([201]); });",
+              "pm.test(\"Trae el paciente y el médico\", function () { const h = pm.response.json(); pm.expect(h.paciente.nombre).to.be.a(\"string\"); pm.expect(h.medico.especialidad).to.be.a(\"string\"); });",
+              "if (pm.response.code === 201) { pm.collectionVariables.set(\"id_relacion\", pm.response.json().id); }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "20 · Relación: crear con un paciente que no existe → 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 999,\n  \"medico_id\": 1,\n  \"fecha\": \"2025-10-20\",\n  \"motivo_consulta\": \"Control general\",\n  \"diagnostico\": \"Sin hallazgos\",\n  \"tratamiento\": \"Seguimiento en 6 meses\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 400\", function () { pm.expect(pm.response.code).to.be.oneOf([400]); });",
+              "pm.test(\"Indica el paciente\", function () { pm.expect(pm.response.json().error).to.include(\"999\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "20b · Relación: crear con un médico que no existe → 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 1,\n  \"medico_id\": 999,\n  \"fecha\": \"2025-10-20\",\n  \"motivo_consulta\": \"Control general\",\n  \"diagnostico\": \"Sin hallazgos\",\n  \"tratamiento\": \"Seguimiento en 6 meses\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 400\", function () { pm.expect(pm.response.code).to.be.oneOf([400]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "21 · Relación: obtener por id (trae paciente y medico) → 200",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/historias/{{id_relacion}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias",
+            "{{id_relacion}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "pm.test(\"Trae el nombre del paciente\", function () { pm.expect(pm.response.json().paciente.nombre).to.be.a(\"string\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "22 · Relación: listar (UNA petición ?ids= a cada servicio) → 200",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "pm.test(\"Cada historia trae paciente y medico\", function () { pm.response.json().forEach(function (h) { pm.expect(h).to.have.property(\"paciente\"); pm.expect(h).to.have.property(\"medico\"); }); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "23 · Con ms-pacientes DETENIDO: listar (paciente null + aviso) → 200",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "pm.test(\"paciente en null con aviso\", function () { const h = pm.response.json()[0]; pm.expect(h.paciente).to.eql(null); pm.expect(h.aviso).to.include(\"ms-pacientes\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "24 · Con ms-pacientes DETENIDO: crear → 503",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/historias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "historias"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 1,\n  \"medico_id\": 1,\n  \"fecha\": \"2025-10-20\",\n  \"motivo_consulta\": \"Control general\",\n  \"diagnostico\": \"Sin hallazgos\",\n  \"tratamiento\": \"Seguimiento en 6 meses\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 503\", function () { pm.expect(pm.response.code).to.be.oneOf([503]); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

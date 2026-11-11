@@ -24,23 +24,23 @@ async function listar(req, res) {
     paciente_id: leerFiltro(req, 'paciente_id'),
     medico_id: leerFiltro(req, 'medico_id'),
   };
-  const historias = await service.listar(filtros);
+  const historias = await service.listar(filtros, req.headers.authorization);
   res.status(200).json(historias);
 }
 
 
 async function obtener(req, res) {
-  const historia = await service.obtener(leerId(req));
+ const historia = await service.obtener(leerId(req), req.headers.authorization);
   res.status(200).json(historia);
 }
 
 async function crear(req, res) {
-  const nueva = await service.crear(req.body);
+  const nueva = await service.crear(req.body, req.headers.authorization);
   res.status(201).location(`${req.baseUrl}/${nueva.id}`).json(nueva);
 }
 
 async function actualizar(req, res) {
-  const actualizada = await service.actualizar(leerId(req), req.body);
+  const actualizada = await service.actualizar(leerId(req), req.body, req.headers.authorization);
   res.status(200).json(actualizada);
 }
 
