@@ -1,379 +1,1221 @@
 {
-	"info": {
-		"_postman_id": "0f4707b6-afce-4bdd-bc4e-def5268986b2",
-		"name": "ms-citas",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "50113144"
-	},
-	"item": [
-		{
-			"name": "Health",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3004/health",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3004",
-					"path": [
-						"health"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Listar citas",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3004/citas",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3004",
-					"path": [
-						"citas"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Obtener cita por id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3004/citas/:id",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3004",
-					"path": [
-						"citas",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Obtener cita por id (no existe)",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3004/citas/:id",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3004",
-					"path": [
-						"citas",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "99"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Crear cita",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"paciente_id\": 2,\r\n  \"medico_id\": 3,\r\n  \"fecha_hora\": \"2026-12-05T08:00\",\r\n  \"sede\": \"Cali\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3004/citas",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3004",
-					"path": [
-						"citas"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Crear cita (choque de horario)",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "  {\r\n    \"paciente_id\": 5,\r\n    \"medico_id\": 1,\r\n   \"fecha_hora\": \"2026-12-01T09:00\",\r\n    \"sede\": \"Bogotá\"\r\n  }",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3004/citas",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3004",
-					"path": [
-						"citas"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Crear cita (datos inválidos)",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "  {\r\n    \"medico_id\": 3,\r\n    \"fecha_hora\": \"2026-12-05T08:00\",\r\n    \"sede\": \"Cali\"\r\n  }",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3004/citas",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3004",
-					"path": [
-						"citas"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Filtrar por estado",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3004/citas?estado=programada",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3004",
-					"path": [
-						"citas"
-					],
-					"query": [
-						{
-							"key": "estado",
-							"value": "programada"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Obtener con id no numérico",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3004/citas/abc",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3004",
-					"path": [
-						"citas",
-						"abc"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Actualizar cita",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "  {\r\n    \"paciente_id\": 1,\r\n    \"medico_id\": 1,\r\n    \"fecha_hora\": \"2026-12-01T11:00\",\r\n    \"sede\": \"Bogotá\",\r\n    \"estado\": \"programada\"\r\n  }",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3004/citas/:id",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3004",
-					"path": [
-						"citas",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Actualizar cita (no existe)",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"paciente_id\": 1,\r\n  \"medico_id\": 1,\r\n  \"fecha_hora\": \"2026-12-01T11:00\",\r\n  \"sede\": \"Bogotá\",\r\n  \"estado\": \"programada\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3004/citas/:id",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3004",
-					"path": [
-						"citas",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "99"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Eliminar cita",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3004/citas/:id",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3004",
-					"path": [
-						"citas",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "4"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Eliminar cita (otra vez)",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3004/citas/:id",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3004",
-					"path": [
-						"citas",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "4"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Crear cita (fecha pasada) (extra)",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"paciente_id\": 2,\r\n  \"medico_id\": 3,\r\n  \"fecha_hora\": \"2026-01-10T08:00\",\r\n  \"sede\": \"Cali\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3004/citas",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3004",
-					"path": [
-						"citas"
-					]
-				}
-			},
-			"response": []
-		}
-	]
+  "info": {
+    "_postman_id": "ced2602b-9c39-4fa0-bf79-d9c99b56ce6d",
+    "name": "ms-citas",
+    "description": "Colección de pruebas de ms-citas (MediRed IPS · Taller 2). Casos 1 a 24 del taller (el 3, ?ids=, no aplica: ningún microservicio consulta citas).\n\nOrden: ejecutar primero los 00 (login y usuarios de prueba). Requiere corriendo ms-usuarios (3001), ms-pacientes (3002), ms-medicos (3003) y ms-citas (3004). Los casos 23 y 24 se ejecutan con ms-medicos detenido.\n\nVariables: {{base}} = ms-citas, {{usuarios}} = ms-usuarios. Los tokens se guardan solos al hacer login.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base",
+      "value": "http://localhost:3004"
+    },
+    {
+      "key": "usuarios",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "token_medico",
+      "value": ""
+    },
+    {
+      "key": "token_admisiones",
+      "value": ""
+    },
+    {
+      "key": "fecha_nueva",
+      "value": ""
+    },
+    {
+      "key": "fecha_18",
+      "value": ""
+    },
+    {
+      "key": "fecha_19",
+      "value": ""
+    },
+    {
+      "key": "cita_id",
+      "value": ""
+    },
+    {
+      "key": "cita_id_19",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "00a · Login administrador → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "if (pm.response.code === 200) { pm.collectionVariables.set(\"token\", pm.response.json().token); }"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{usuarios}}/usuarios/login",
+          "host": [
+            "{{usuarios}}"
+          ],
+          "path": [
+            "usuarios",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@empresa.com\",\n  \"password\": \"Admin2026*\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      }
+    },
+    {
+      "name": "00b · Crear usuario medico (409 si ya existe) → 201/409",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 201 o 409\", function () { pm.expect(pm.response.code).to.be.oneOf([201, 409]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{usuarios}}/usuarios",
+          "host": [
+            "{{usuarios}}"
+          ],
+          "path": [
+            "usuarios"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Usuario Médico\",\n  \"email\": \"medico@medired.com\",\n  \"password\": \"Medico2026*\",\n  \"rol\": \"medico\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "00c · Crear usuario admisiones (409 si ya existe) → 201/409",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 201 o 409\", function () { pm.expect(pm.response.code).to.be.oneOf([201, 409]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{usuarios}}/usuarios",
+          "host": [
+            "{{usuarios}}"
+          ],
+          "path": [
+            "usuarios"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Usuario Admisiones\",\n  \"email\": \"admisiones@medired.com\",\n  \"password\": \"Admisiones2026*\",\n  \"rol\": \"admisiones\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "00d · Login medico → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "if (pm.response.code === 200) { pm.collectionVariables.set(\"token_medico\", pm.response.json().token); }"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{usuarios}}/usuarios/login",
+          "host": [
+            "{{usuarios}}"
+          ],
+          "path": [
+            "usuarios",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"medico@medired.com\",\n  \"password\": \"Medico2026*\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      }
+    },
+    {
+      "name": "00e · Login admisiones → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "if (pm.response.code === 200) { pm.collectionVariables.set(\"token_admisiones\", pm.response.json().token); }"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{usuarios}}/usuarios/login",
+          "host": [
+            "{{usuarios}}"
+          ],
+          "path": [
+            "usuarios",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admisiones@medired.com\",\n  \"password\": \"Admisiones2026*\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      }
+    },
+    {
+      "name": "Health (público) → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/health",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "health"
+          ]
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      }
+    },
+    {
+      "name": "01 · Listar todas → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        }
+      }
+    },
+    {
+      "name": "02 · Filtrar por estado → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/citas?estado=programada",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ],
+          "query": [
+            {
+              "key": "estado",
+              "value": "programada"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "04 · Obtener existente → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/citas/1",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas",
+            "1"
+          ]
+        }
+      }
+    },
+    {
+      "name": "05 · Obtener inexistente → 404",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 404\", function () { pm.expect(pm.response.code).to.be.oneOf([404]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/citas/99999",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas",
+            "99999"
+          ]
+        }
+      }
+    },
+    {
+      "name": "06 · Obtener con id no numérico → 400",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 400\", function () { pm.expect(pm.response.code).to.be.oneOf([400]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/citas/abc",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas",
+            "abc"
+          ]
+        }
+      }
+    },
+    {
+      "name": "07 · Crear válida → 201",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Fecha futura distinta en cada ejecución, para no chocar con citas anteriores (formato AAAA-MM-DDTHH:MM)",
+              "const d = new Date(Date.UTC(2027, Math.floor(Math.random()*12), 1 + Math.floor(Math.random()*28), 7 + Math.floor(Math.random()*10), [0,15,30,45][Math.floor(Math.random()*4)]));",
+              "pm.collectionVariables.set(\"fecha_nueva\", d.toISOString().slice(0, 16));"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 201\", function () { pm.expect(pm.response.code).to.be.oneOf([201]); });",
+              "if (pm.response.code === 201) { pm.collectionVariables.set(\"cita_id\", pm.response.json().id); }"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 2,\n  \"medico_id\": 2,\n  \"fecha_hora\": \"{{fecha_nueva}}\",\n  \"sede\": \"Cali\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "08 · Crear sin paciente_id → 400",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 400\", function () { pm.expect(pm.response.code).to.be.oneOf([400]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"medico_id\": 3,\n  \"fecha_hora\": \"2027-01-15T08:00\",\n  \"sede\": \"Cali\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "09 · Regla: médico con otra cita a la misma hora → 409",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 409\", function () { pm.expect(pm.response.code).to.be.oneOf([409]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 3,\n  \"medico_id\": 2,\n  \"fecha_hora\": \"{{fecha_nueva}}\",\n  \"sede\": \"Bogotá\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Usa el mismo médico y la misma fecha_hora de la cita creada en el caso 07."
+      }
+    },
+    {
+      "name": "09b · Regla: fecha en el pasado → 400",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 400\", function () { pm.expect(pm.response.code).to.be.oneOf([400]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 2,\n  \"medico_id\": 3,\n  \"fecha_hora\": \"2026-01-10T08:00\",\n  \"sede\": \"Cali\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "10 · Actualizar existente → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/citas/{{cita_id}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas",
+            "{{cita_id}}"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 2,\n  \"medico_id\": 2,\n  \"fecha_hora\": \"{{fecha_nueva}}\",\n  \"sede\": \"Medellín\",\n  \"estado\": \"atendida\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "11 · Actualizar inexistente → 404",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 404\", function () { pm.expect(pm.response.code).to.be.oneOf([404]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/citas/99999",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas",
+            "99999"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 1,\n  \"medico_id\": 1,\n  \"fecha_hora\": \"2027-01-15T08:00\",\n  \"sede\": \"Bogotá\",\n  \"estado\": \"programada\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "12 · Eliminar existente → 204",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 204\", function () { pm.expect(pm.response.code).to.be.oneOf([204]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/citas/{{cita_id}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas",
+            "{{cita_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "13 · Eliminar otra vez → 404",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 404\", function () { pm.expect(pm.response.code).to.be.oneOf([404]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/citas/{{cita_id}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas",
+            "{{cita_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "14 · Seguridad: sin token → 401",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 401\", function () { pm.expect(pm.response.code).to.be.oneOf([401]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      }
+    },
+    {
+      "name": "15 · Seguridad: token inventado (dice administrador, firma falsa) → 401",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 401\", function () { pm.expect(pm.response.code).to.be.oneOf([401]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sIjoiYWRtaW5pc3RyYWRvciJ9.firmafalsa123"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        },
+        "auth": {
+          "type": "noauth"
+        }
+      }
+    },
+    {
+      "name": "16 · Seguridad: GET con rol que solo consulta (medico) → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token_medico}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "17 · Seguridad: POST con rol sin permiso (medico) → 403",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 403\", function () { pm.expect(pm.response.code).to.be.oneOf([403]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 1,\n  \"medico_id\": 1,\n  \"fecha_hora\": \"2027-02-10T10:00\",\n  \"sede\": \"Cali\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token_medico}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "18 · Seguridad: POST con rol con permiso (admisiones) → 201",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Fecha futura distinta en cada ejecución, para no chocar con citas anteriores (formato AAAA-MM-DDTHH:MM)",
+              "const d = new Date(Date.UTC(2027, Math.floor(Math.random()*12), 1 + Math.floor(Math.random()*28), 7 + Math.floor(Math.random()*10), [0,15,30,45][Math.floor(Math.random()*4)]));",
+              "pm.collectionVariables.set(\"fecha_18\", d.toISOString().slice(0, 16));"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 201\", function () { pm.expect(pm.response.code).to.be.oneOf([201]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 1,\n  \"medico_id\": 1,\n  \"fecha_hora\": \"{{fecha_18}}\",\n  \"sede\": \"Cali\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token_admisiones}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "19 · Relación: crear con paciente y médico que existen (trae los objetos) → 201",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Fecha futura distinta en cada ejecución, para no chocar con citas anteriores (formato AAAA-MM-DDTHH:MM)",
+              "const d = new Date(Date.UTC(2027, Math.floor(Math.random()*12), 1 + Math.floor(Math.random()*28), 7 + Math.floor(Math.random()*10), [0,15,30,45][Math.floor(Math.random()*4)]));",
+              "pm.collectionVariables.set(\"fecha_19\", d.toISOString().slice(0, 16));"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 201\", function () { pm.expect(pm.response.code).to.be.oneOf([201]); });",
+              "if (pm.response.code === 201) { pm.collectionVariables.set(\"cita_id_19\", pm.response.json().id); }",
+              "if (pm.response.code === 200 || pm.response.code === 201) {",
+              "  const c = Array.isArray(pm.response.json()) ? pm.response.json()[0] : pm.response.json();",
+              "  pm.test(\"Trae los objetos paciente y medico\", function () { pm.expect(c.paciente).to.be.an(\"object\"); pm.expect(c.medico).to.have.property(\"especialidad\"); });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 3,\n  \"medico_id\": 3,\n  \"fecha_hora\": \"{{fecha_19}}\",\n  \"sede\": \"Medellín\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "20 · Relación: crear con un paciente que no existe → 400",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 400\", function () { pm.expect(pm.response.code).to.be.oneOf([400]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 999,\n  \"medico_id\": 2,\n  \"fecha_hora\": \"2027-03-10T10:00\",\n  \"sede\": \"Cali\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "21 · Relación: obtener por id (trae los objetos) → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "if (pm.response.code === 200 || pm.response.code === 201) {",
+              "  const c = Array.isArray(pm.response.json()) ? pm.response.json()[0] : pm.response.json();",
+              "  pm.test(\"Trae los objetos paciente y medico\", function () { pm.expect(c.paciente).to.be.an(\"object\"); pm.expect(c.medico).to.have.property(\"especialidad\"); });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/citas/{{cita_id_19}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas",
+            "{{cita_id_19}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "22 · Relación: listar (ms-pacientes y ms-medicos reciben UNA petición ?ids=) → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "if (pm.response.code === 200 || pm.response.code === 201) {",
+              "  const c = Array.isArray(pm.response.json()) ? pm.response.json()[0] : pm.response.json();",
+              "  pm.test(\"Trae los objetos paciente y medico\", function () { pm.expect(c.paciente).to.be.an(\"object\"); pm.expect(c.medico).to.have.property(\"especialidad\"); });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        },
+        "description": "Mirar la terminal de ms-pacientes y la de ms-medicos: cada una debe mostrar una sola petición GET /...?ids=..."
+      }
+    },
+    {
+      "name": "23 · Con ms-medicos DETENIDO: listar (medico null + aviso) → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 200\", function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+              "pm.test(\"medico en null y aviso\", function () { const c = pm.response.json()[0]; pm.expect(c.medico).to.equal(null); pm.expect(c.aviso).to.include(\"ms-medicos\"); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        },
+        "description": "Antes de enviarla, detener ms-medicos (Ctrl + C en su terminal)."
+      }
+    },
+    {
+      "name": "24 · Con ms-medicos DETENIDO: crear → 503",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Responde 503\", function () { pm.expect(pm.response.code).to.be.oneOf([503]); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/citas",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "citas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"paciente_id\": 1,\n  \"medico_id\": 2,\n  \"fecha_hora\": \"2027-04-10T10:00\",\n  \"sede\": \"Cali\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Con ms-medicos todavía detenido. Después volver a encenderlo (dotnet run)."
+      }
+    }
+  ]
 }
