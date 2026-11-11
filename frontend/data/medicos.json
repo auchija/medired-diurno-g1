@@ -1,0 +1,5 @@
+[
+  { "id": 1, "nombre": "Carlos Ruiz", "registro_medico": "RM-FICTICIO-001", "especialidad": "Medicina general", "sede": "Cali" },
+  { "id": 2, "nombre": "Mariana Torres", "registro_medico": "RM-FICTICIO-002", "especialidad": "Pediatría", "sede": "Bogotá" },
+  { "id": 3, "nombre": "Andrés Mendoza", "registro_medico": "RM-FICTICIO-003", "especialidad": "Cardiología", "sede": "Medellín" }
+]

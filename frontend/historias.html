@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/medired.css">
+  <title>MediRed · Historias clínicas</title>
+</head>
+<body>
+  <!-- PÁGINA PROVISIONAL: la reemplaza Miguel Ángel Jiménez con las pantallas de historias (ver frontend/README.md).
+       Mantener la estructura: .aplicacion > #lateral + .principal > #superior + main.contenido, #mensajes y #dialogo. -->
+  <div class="aplicacion">
+    <aside class="lateral" id="lateral"></aside>
+    <div class="principal">
+      <header class="superior" id="superior"></header>
+      <main class="contenido">
+        <section class="panel en-construccion">
+          <div class="indicador-icono" id="icono"></div>
+          <h2>Módulo en desarrollo</h2>
+          <p>Este módulo estará disponible próximamente.</p>
+        </section>
+      </main>
+      <footer class="pie-app">© 2026 MediRed IPS · Sistema de gestión clínica</footer>
+    </div>
+  </div>
+  <div id="mensajes"></div>
+  <dialog id="dialogo"></dialog>
+
+  <script src="js/config.js"></script>
+  <script src="js/iconos.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/sesion.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    if (exigirSesion()) {
+      pintarEstructura('historias.html', 'Historias clínicas', ['Historias clínicas']);
+      document.getElementById('icono').innerHTML = icono('historias', 26);
+    }
+  </script>
+</body>
+</html>

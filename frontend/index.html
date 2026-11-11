@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/medired.css">
+  <title>MediRed · Iniciar sesión</title>
+</head>
+<body>
+  <main class="login">
+    <section class="login-imagen" aria-hidden="true">
+      <h2>Red de atención en salud para Bogotá, Cali y Medellín</h2>
+      <p>Sistema de gestión clínica: agenda de citas, pacientes, cuerpo médico e historias clínicas en un solo lugar.</p>
+      <div class="sedes" id="sedes"></div>
+    </section>
+
+    <section class="login-panel">
+      <div class="login-caja">
+        <span class="logo"><span class="logo-icono">+</span><span><span class="logo-medi">Medi</span><span class="logo-red">Red</span></span></span>
+        <h1>Iniciar sesión</h1>
+        <p>Ingrese con su cuenta institucional.</p>
+
+        <form id="formulario" novalidate>
+          <label class="campo"><span>Correo institucional</span><input name="email" type="email" autocomplete="username" placeholder="nombre@medired.com" required></label>
+          <label class="campo"><span>Contraseña</span><input name="password" type="password" autocomplete="current-password" required></label>
+          <div class="login-error" id="error" role="alert" hidden></div>
+          <button class="boton" type="submit">Ingresar</button>
+        </form>
+
+        <!-- Inicio de sesión simulado (Taller 2): atajos para llenar el formulario con los usuarios de prueba -->
+        <div class="demo">
+          <p>Acceso de demostración</p>
+          <div class="demo-usuarios" id="demo"></div>
+        </div>
+        <p class="login-pie">© 2026 MediRed IPS · Uso exclusivo del personal autorizado</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/iconos.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/sesion.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    document.getElementById('sedes').innerHTML = SEDES.map((s) => `<span>${icono('sede', 14)} ${esc(s)}</span>`).join('');
+
+    const formulario = document.getElementById('formulario');
+    const error = document.getElementById('error');
+    formulario.onsubmit = (evento) => {
+      evento.preventDefault();
+      try {
+        iniciarSesion(formulario.elements.email.value, formulario.elements.password.value);
+      } catch (e) {
+        error.textContent = e.message;
+        error.hidden = false;
+      }
+    };
+
+    // Atajos de demostración: llenan el correo y la contraseña del usuario de prueba
+    const demo = document.getElementById('demo');
+    demo.innerHTML = USUARIOS_DE_PRUEBA.map((u, i) => `<button type="button" data-i="${i}">${esc(NOMBRE_ROL[u.rol])}</button>`).join('');
+    demo.onclick = (evento) => {
+      const boton = evento.target.closest('[data-i]');
+      if (!boton) return;
+      const u = USUARIOS_DE_PRUEBA[boton.dataset.i];
+      formulario.elements.email.value = u.email;
+      formulario.elements.password.value = u.password;
+      error.hidden = true;
+    };
+  </script>
+</body>
+</html>

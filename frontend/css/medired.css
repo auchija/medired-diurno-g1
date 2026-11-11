@@ -1,0 +1,406 @@
+/* =====================================================================
+   MEDIRED · ESTILOS COMUNES
+   Hoja de estilos compartida por todas las pantallas del sistema.
+   La mantiene el integrador: nadie la modifica sin avisar al grupo.
+   Cada pantalla usa estas clases; no se crean estilos propios.
+   ===================================================================== */
+
+/* ---------- 1. Paleta y medidas (variables) ---------- */
+:root {
+  /* Marca: lila + verde turquesa */
+  --principal: #6D63C7;          /* lila: barra lateral, acentos, "Medi" */
+  --principal-oscuro: #4B4396;   /* títulos y textos de marca */
+  --principal-suave: #EDE9FB;    /* encabezados de tabla, elementos activos */
+  --accion: #1E7A76;             /* verde turquesa: botones, enlaces, "Red" */
+  --accion-hover: #17625F;
+  --accion-suave: #E2F3F1;
+  --turquesa-claro: #8BE3DA;
+  --celeste: #C3E7F1;
+  --lavanda: #D8B4FF;
+
+  /* Base */
+  --fondo: #F4F9F9;
+  --blanco: #FFFFFF;
+  --borde: #B3BAB7;
+  --borde-suave: #E1E6E5;
+  --texto: #20373B;
+  --texto-2: #5A6170;
+
+  /* Estados */
+  --info: #1D4ED8;   --info-bg: #E0ECFF;     /* programada */
+  --ok: #15803D;     --ok-bg: #DCFCE7;       /* atendida / éxito */
+  --error: #B91C1C;  --error-bg: #FEE2E2;    /* cancelada / error */
+  --alerta: #B45309; --alerta-bg: #FEF3C7;   /* advertencias */
+
+  --radio: 12px;
+  --sombra: 0 1px 3px rgba(32, 55, 59, 0.06), 0 4px 14px rgba(32, 55, 59, 0.05);
+  --ancho-lateral: 248px;
+  --fuente-titulos: 'Montserrat', system-ui, sans-serif;
+  --fuente-texto: 'Poppins', system-ui, sans-serif;
+}
+
+/* ---------- 2. Base ---------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--fuente-texto);
+  font-size: 14px;
+  background: var(--fondo);
+  color: var(--texto);
+}
+h1, h2, h3, button, th, .logo { font-family: var(--fuente-titulos); }
+a { color: var(--accion); }
+.icono { flex: none; }
+[hidden] { display: none !important; }
+
+/* ---------- 3. Estructura: barra lateral + área principal ---------- */
+.aplicacion { display: grid; grid-template-columns: var(--ancho-lateral) 1fr; min-height: 100vh; }
+
+.lateral {
+  background: var(--principal-oscuro);
+  color: var(--blanco);
+  display: flex;
+  flex-direction: column;
+  padding: 18px 14px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--blanco);
+  border-radius: 999px;
+  padding: 5px 16px 5px 6px;
+  font-weight: 800;
+  font-size: 19px;
+  text-decoration: none;
+  align-self: flex-start;
+}
+.logo-icono {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--accion);
+  color: var(--blanco);
+  display: grid; place-items: center;
+}
+.logo-medi { color: var(--principal); }
+.logo-red  { color: var(--accion); }
+
+.navegacion { display: grid; gap: 4px; margin-top: 28px; }
+.navegacion a {
+  display: flex; align-items: center; gap: 12px;
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+.navegacion a:hover { background: rgba(255, 255, 255, 0.08); color: var(--blanco); }
+.navegacion a.activo { background: var(--principal); color: var(--blanco); box-shadow: inset 3px 0 0 var(--turquesa-claro); }
+
+.lateral-pie {
+  margin-top: auto;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 8px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+.lateral-pie b { display: block; font-size: 13px; }
+.lateral-pie small { display: block; font-size: 12px; opacity: .75; }
+.avatar {
+  width: 36px; height: 36px; flex: none;
+  border-radius: 50%;
+  background: var(--accion);
+  color: var(--blanco);
+  display: grid; place-items: center;
+  font-family: var(--fuente-titulos);
+  font-weight: 700; font-size: 13px;
+}
+.avatar.suave { background: var(--principal-suave); color: var(--principal-oscuro); width: 32px; height: 32px; font-size: 12px; }
+.boton-icono {
+  margin-left: auto;
+  background: transparent; border: none; color: inherit;
+  width: 34px; height: 34px; border-radius: 8px;
+  display: grid; place-items: center; cursor: pointer;
+}
+.boton-icono:hover { background: rgba(255, 255, 255, 0.12); }
+
+.principal { min-width: 0; display: flex; flex-direction: column; }
+.superior {
+  background: var(--blanco);
+  border-bottom: 1px solid var(--borde-suave);
+  display: flex; align-items: center; gap: 24px;
+  padding: 14px 32px;
+  position: sticky; top: 0; z-index: 5;
+}
+.superior h1 { margin: 2px 0 0; font-size: 20px; color: var(--principal-oscuro); }
+.migas { font-size: 12px; color: var(--texto-2); }
+.migas span { margin: 0 4px; opacity: .6; }
+.busqueda {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--fondo);
+  border: 1px solid var(--borde-suave);
+  border-radius: 999px;
+  padding: 8px 14px;
+  width: min(340px, 30vw);
+  color: var(--texto-2);
+}
+.busqueda input { border: none; background: transparent; outline: none; font: inherit; width: 100%; color: var(--texto); }
+.busqueda:focus-within { border-color: var(--principal); }
+.superior-derecha { display: flex; align-items: center; gap: 14px; color: var(--texto-2); font-size: 13px; white-space: nowrap; }
+.superior-derecha .fecha { display: inline-flex; align-items: center; gap: 6px; }
+.chip-rol {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--principal-suave); color: var(--principal-oscuro);
+  border-radius: 999px; padding: 4px 10px; font-weight: 600; font-size: 12px;
+}
+
+.contenido { padding: 26px 32px 40px; max-width: 1280px; width: 100%; }
+.pie-app { margin-top: auto; padding: 16px 32px; color: var(--texto-2); font-size: 12px; border-top: 1px solid var(--borde-suave); }
+
+/* ---------- 4. Paneles (tarjetas de contenido) ---------- */
+.panel {
+  background: var(--blanco);
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+.panel-cabecera {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--borde-suave);
+}
+.panel-cabecera h2 { margin: 0; font-size: 15px; color: var(--principal-oscuro); }
+.panel-cabecera p { margin: 2px 0 0; color: var(--texto-2); font-size: 12px; }
+.panel-cabecera .empuje { margin-left: auto; }
+.panel-cuerpo { padding: 16px 20px; }
+.rejilla-panel { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px; align-items: start; }
+.columna { display: grid; gap: 20px; }
+
+/* ---------- 5. Botones ---------- */
+.boton {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1.5px solid var(--accion);
+  background: var(--accion);
+  color: var(--blanco);
+  border-radius: 10px;
+  padding: 9px 16px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.boton:hover { background: var(--accion-hover); border-color: var(--accion-hover); }
+.boton-secundario { background: var(--blanco); color: var(--principal-oscuro); border-color: var(--borde-suave); }
+.boton-secundario:hover { background: var(--principal-suave); border-color: var(--principal-suave); }
+.boton-peligro { background: var(--error); border-color: var(--error); }
+.boton-peligro:hover { background: #991B1B; border-color: #991B1B; }
+.boton-enlace { background: none; border: none; padding: 0; color: var(--accion); font-weight: 600; cursor: pointer; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+.acciones-fila { display: flex; gap: 4px; justify-content: flex-end; }
+.accion-icono {
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid transparent; background: transparent;
+  display: grid; place-items: center; cursor: pointer; color: var(--texto-2);
+}
+.accion-icono:hover { background: var(--accion-suave); color: var(--accion); }
+.accion-icono.peligro:hover { background: var(--error-bg); color: var(--error); }
+
+/* ---------- 6. Barra de herramientas y filtros ---------- */
+.herramientas { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 14px 20px; border-bottom: 1px solid var(--borde-suave); }
+.herramientas .empuje { margin-left: auto; }
+.segmentado { display: inline-flex; background: var(--fondo); border: 1px solid var(--borde-suave); border-radius: 10px; padding: 3px; }
+.segmentado button {
+  border: none; background: transparent; border-radius: 8px;
+  padding: 6px 12px; font-family: var(--fuente-texto); font-size: 13px; color: var(--texto-2); cursor: pointer;
+}
+.segmentado button.activo { background: var(--blanco); color: var(--principal-oscuro); font-weight: 600; box-shadow: 0 1px 3px rgba(32, 55, 59, 0.12); }
+.segmentado .cuenta { margin-left: 4px; font-size: 11px; opacity: .7; }
+.selector, .campo-busqueda {
+  font: inherit; font-size: 13px;
+  padding: 8px 12px;
+  border: 1px solid var(--borde-suave);
+  border-radius: 10px;
+  background: var(--blanco);
+  color: var(--texto);
+}
+.campo-busqueda { width: 240px; }
+.selector:focus, .campo-busqueda:focus { outline: 2px solid var(--principal-suave); border-color: var(--principal); }
+
+/* ---------- 7. Tablas ---------- */
+.tabla-contenedor { overflow-x: auto; }
+.tabla { width: 100%; border-collapse: collapse; }
+.tabla th {
+  background: var(--fondo);
+  color: var(--texto-2);
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 600;
+  border-bottom: 1px solid var(--borde-suave);
+}
+.tabla td { padding: 12px 16px; border-bottom: 1px solid var(--borde-suave); font-size: 13px; vertical-align: middle; }
+.tabla tr:last-child td { border-bottom: none; }
+.tabla tbody tr:hover { background: #FAFCFC; }
+.tabla td small { display: block; color: var(--texto-2); font-size: 12px; }
+.tabla .vacia { text-align: center; color: var(--texto-2); padding: 36px; }
+.persona { display: flex; align-items: center; gap: 10px; }
+.fecha-celda b { display: block; font-weight: 600; }
+.pie-tabla { padding: 12px 20px; color: var(--texto-2); font-size: 12px; border-top: 1px solid var(--borde-suave); display: flex; justify-content: space-between; }
+
+/* ---------- 8. Etiquetas de estado ---------- */
+.estado { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.estado::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.estado-programada { background: var(--info-bg); color: var(--info); }
+.estado-atendida   { background: var(--ok-bg); color: var(--ok); }
+.estado-cancelada  { background: var(--error-bg); color: var(--error); }
+.sin-dato { color: var(--texto-2); font-style: italic; }
+.alerta-dato { display: inline-flex; align-items: center; gap: 4px; color: var(--alerta); font-size: 12px; }
+
+/* ---------- 9. Indicadores ---------- */
+.indicadores { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; }
+.indicador { display: flex; gap: 14px; align-items: center; padding: 16px 18px; }
+.indicador-icono {
+  width: 44px; height: 44px; border-radius: 12px; flex: none;
+  display: grid; place-items: center;
+  background: var(--principal-suave); color: var(--principal);
+}
+.indicador-icono.turquesa { background: var(--accion-suave); color: var(--accion); }
+.indicador-icono.azul { background: var(--info-bg); color: var(--info); }
+.indicador-icono.rojo { background: var(--error-bg); color: var(--error); }
+.indicador .numero { font-family: var(--fuente-titulos); font-size: 24px; font-weight: 700; line-height: 1.1; }
+.indicador .texto { color: var(--texto-2); font-size: 12px; }
+
+/* ---------- 10. Bienvenida, accesos y listas del panel ---------- */
+.bienvenida {
+  border-radius: var(--radio);
+  color: var(--blanco);
+  padding: 26px 28px;
+  background:
+    linear-gradient(90deg, rgba(75, 67, 150, 0.95) 0%, rgba(75, 67, 150, 0.85) 45%, rgba(30, 122, 118, 0.35) 100%),
+    url('../img/hospital.jpg') center 40% / cover no-repeat,
+    var(--principal-oscuro);
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.bienvenida h2 { margin: 0 0 4px; font-size: 22px; }
+.bienvenida p { margin: 0; opacity: .9; }
+.bienvenida .empuje { margin-left: auto; }
+.bienvenida .boton { background: var(--blanco); color: var(--principal-oscuro); border-color: var(--blanco); }
+.bienvenida .boton:hover { background: var(--principal-suave); }
+
+.accesos { display: grid; gap: 10px; }
+.acceso {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px; border-radius: 10px;
+  border: 1px solid var(--borde-suave);
+  text-decoration: none; color: var(--texto);
+}
+.acceso:hover { border-color: var(--principal); background: var(--principal-suave); }
+.acceso b { display: block; font-size: 13px; }
+.acceso small { color: var(--texto-2); font-size: 12px; }
+.acceso .flecha { margin-left: auto; color: var(--texto-2); }
+
+.lista-sedes { display: grid; gap: 14px; }
+.sede-fila b { font-size: 13px; }
+.sede-fila .datos { display: flex; justify-content: space-between; font-size: 12px; color: var(--texto-2); margin-bottom: 6px; }
+.barra-progreso { height: 8px; border-radius: 99px; background: var(--fondo); overflow: hidden; }
+.barra-progreso span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--principal), var(--accion)); }
+
+/* ---------- 11. Formularios (en cuadro de diálogo) ---------- */
+dialog {
+  border: none; border-radius: 16px; padding: 0;
+  width: min(520px, 92vw);
+  box-shadow: 0 20px 50px rgba(32, 55, 59, 0.25);
+}
+dialog::backdrop { background: rgba(32, 55, 59, 0.45); }
+.formulario { padding: 24px; display: grid; gap: 14px; }
+.formulario h2 { margin: 0 0 4px; color: var(--principal-oscuro); font-size: 18px; }
+.campo { display: grid; gap: 6px; }
+.campo span { font-weight: 600; font-size: 12px; color: var(--texto-2); }
+.campo input, .campo select {
+  font: inherit;
+  padding: 10px 12px;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: var(--blanco);
+  color: var(--texto);
+}
+.campo input:focus, .campo select:focus { outline: 2px solid var(--principal-suave); border-color: var(--principal); }
+.acciones-form { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+
+/* ---------- 12. Mensajes y avisos ---------- */
+#mensajes { position: fixed; top: 18px; right: 20px; display: grid; gap: 8px; z-index: 20; }
+.mensaje { padding: 12px 18px; border-radius: 10px; font-size: 13px; box-shadow: var(--sombra); max-width: 380px; }
+.mensaje-ok { background: var(--ok-bg); color: var(--ok); border: 1px solid #86EFAC; }
+.mensaje-error { background: var(--error-bg); color: var(--error); border: 1px solid #FCA5A5; }
+.aviso {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--principal-suave);
+  border: 1px solid #DCD6F7;
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: var(--principal-oscuro);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+.en-construccion { text-align: center; padding: 56px 24px; color: var(--texto-2); }
+.en-construccion .indicador-icono { margin: 0 auto 12px; width: 56px; height: 56px; }
+.en-construccion h2 { color: var(--principal-oscuro); margin: 0 0 6px; font-size: 18px; }
+
+/* ---------- 13. Inicio de sesión ---------- */
+.login { min-height: 100vh; display: grid; grid-template-columns: 1.15fr 1fr; background: var(--blanco); }
+.login-imagen {
+  background:
+    linear-gradient(180deg, rgba(32, 55, 59, 0.15) 0%, rgba(75, 67, 150, 0.85) 100%),
+    url('../img/hospital.jpg') center / cover no-repeat,
+    var(--principal-oscuro);
+  color: var(--blanco);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 48px;
+}
+.login-imagen h2 { font-size: 30px; line-height: 1.2; margin: 0 0 10px; max-width: 520px; }
+.login-imagen p { margin: 0; opacity: .9; max-width: 480px; }
+.login-imagen .sedes { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+.login-imagen .sedes span { display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.16); border-radius: 999px; padding: 6px 12px; font-size: 13px; }
+.login-panel { display: grid; place-items: center; padding: 40px 24px; }
+.login-caja { width: min(400px, 100%); }
+.login-caja .logo { border: 1px solid var(--borde-suave); margin-bottom: 28px; }
+.login-caja h1 { color: var(--principal-oscuro); margin: 0 0 4px; font-size: 24px; }
+.login-caja > p { color: var(--texto-2); margin: 0 0 24px; }
+.login-caja form { display: grid; gap: 16px; }
+.login-caja .boton { justify-content: center; padding: 12px; font-size: 14px; }
+.login-error { background: var(--error-bg); color: var(--error); border-radius: 10px; padding: 10px 12px; font-size: 13px; }
+.demo { margin-top: 28px; padding-top: 18px; border-top: 1px dashed var(--borde-suave); }
+.demo p { margin: 0 0 10px; color: var(--texto-2); font-size: 12px; }
+.demo-usuarios { display: flex; gap: 8px; flex-wrap: wrap; }
+.demo-usuarios button {
+  border: 1px solid var(--borde-suave); background: var(--fondo); border-radius: 999px;
+  padding: 6px 12px; font-family: var(--fuente-texto); font-size: 12px; cursor: pointer; color: var(--principal-oscuro);
+}
+.demo-usuarios button:hover { border-color: var(--principal); background: var(--principal-suave); }
+.login-caja .login-pie { margin: 28px 0 0; color: var(--texto-2); font-size: 12px; }
+
+/* ---------- 14. Pantallas pequeñas ---------- */
+@media (max-width: 1100px) {
+  .rejilla-panel { grid-template-columns: 1fr; }
+  .superior-derecha .fecha { display: none; }
+}
+@media (max-width: 860px) {
+  .aplicacion { grid-template-columns: 1fr; }
+  .lateral { position: static; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 16px; }
+  .navegacion { margin: 0; display: flex; overflow-x: auto; width: 100%; order: 3; }
+  .navegacion a span { white-space: nowrap; }
+  .lateral-pie { margin: 0 0 0 auto; border: none; padding: 0; }
+  .lateral-pie div:not(.avatar) { display: none; }
+  .superior { flex-wrap: wrap; padding: 12px 16px; position: static; }
+  .busqueda { width: 100%; margin: 0; }
+  .contenido { padding: 18px 16px 32px; }
+  .login { grid-template-columns: 1fr; }
+  .login-imagen { min-height: 260px; padding: 24px; }
+  .login-imagen h2 { font-size: 22px; }
+  .campo-busqueda { width: 100%; }
+}

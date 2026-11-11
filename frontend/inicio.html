@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/medired.css">
+  <title>MediRed · Panel</title>
+</head>
+<body>
+  <div class="aplicacion">
+    <aside class="lateral" id="lateral"></aside>
+    <div class="principal">
+      <header class="superior" id="superior"></header>
+      <main class="contenido">
+        <section class="bienvenida">
+          <div>
+            <h2 id="saludo">Bienvenido</h2>
+            <p id="resumen"></p>
+          </div>
+          <div class="empuje" id="accion-principal"></div>
+        </section>
+
+        <section class="indicadores" id="indicadores"></section>
+
+        <div class="rejilla-panel">
+          <section class="panel">
+            <div class="panel-cabecera">
+              <div><h2>Próximas citas</h2><p>Citas programadas en las tres sedes</p></div>
+              <a class="boton-enlace empuje" href="citas.html">Ver agenda completa →</a>
+            </div>
+            <div class="tabla-contenedor">
+              <table class="tabla">
+                <thead><tr><th>Fecha y hora</th><th>Paciente</th><th>Médico</th><th>Sede</th></tr></thead>
+                <tbody id="proximas"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <div class="columna">
+            <section class="panel">
+              <div class="panel-cabecera"><div><h2>Accesos rápidos</h2><p id="accesos-rol"></p></div></div>
+              <div class="panel-cuerpo accesos" id="accesos"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-cabecera"><div><h2>Citas programadas por sede</h2></div></div>
+              <div class="panel-cuerpo lista-sedes" id="sedes"></div>
+            </section>
+          </div>
+        </div>
+      </main>
+      <footer class="pie-app">© 2026 MediRed IPS · Sistema de gestión clínica</footer>
+    </div>
+  </div>
+  <div id="mensajes"></div>
+  <dialog id="dialogo"></dialog>
+
+  <script src="js/config.js"></script>
+  <script src="js/iconos.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/sesion.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/inicio.js"></script>
+</body>
+</html>
