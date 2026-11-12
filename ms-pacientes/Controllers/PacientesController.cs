@@ -37,18 +37,7 @@ public class PacientesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Paciente>> ObtenerPorId(int id)
     {
-        var idClaim = User.FindFirst("id")?.Value;
-
-        var esAdministrador = User.IsInRole("administrador");
-
-        var esSuPropioId = int.TryParse(idClaim, out var usuarioId)
-                           && usuarioId == id;
-
-        if (!esAdministrador && !esSuPropioId)
-            return Forbid();
-
         var paciente = await _service.ObtenerPorIdAsync(id);
-
         return Ok(paciente);
     }
 
