@@ -9,17 +9,34 @@
   <title>MediRed · Médicos</title>
 </head>
 <body>
-  <!-- PÁGINA PROVISIONAL: la reemplaza Sebastián Montaño con las pantallas de medicos (ver frontend/README.md).
-       Mantener la estructura: .aplicacion > #lateral + .principal > #superior + main.contenido, #mensajes y #dialogo. -->
+  <!-- Pantallas de médicos (responsable: Sebastián Montaño · ms-medicos) -->
   <div class="aplicacion">
     <aside class="lateral" id="lateral"></aside>
     <div class="principal">
       <header class="superior" id="superior"></header>
       <main class="contenido">
-        <section class="panel en-construccion">
-          <div class="indicador-icono" id="icono"></div>
-          <h2>Módulo en desarrollo</h2>
-          <p>Este módulo estará disponible próximamente.</p>
+        <div class="aviso" id="aviso-rol" hidden></div>
+
+        <section class="panel">
+          <div class="herramientas">
+            <input class="campo-busqueda" id="filtro-texto" type="search" placeholder="Buscar por nombre o registro médico" aria-label="Buscar por nombre o registro médico">
+            <select class="selector" id="filtro-especialidad" aria-label="Filtrar por especialidad"></select>
+            <select class="selector" id="filtro-sede" aria-label="Filtrar por sede"></select>
+            <div class="empuje"></div>
+            <button class="boton" id="nuevo" hidden></button>
+          </div>
+          <div class="tabla-contenedor">
+            <table class="tabla">
+              <thead>
+                <tr><th>Médico</th><th>Registro médico</th><th>Especialidad</th><th>Sede</th><th id="col-acciones" hidden></th></tr>
+              </thead>
+              <tbody id="filas"></tbody>
+            </table>
+          </div>
+          <div class="pie-tabla">
+            <span id="conteo"></span>
+            <button class="boton-enlace" id="reiniciar" hidden>Restablecer datos de demostración</button>
+          </div>
         </section>
       </main>
       <footer class="pie-app">© 2026 MediRed IPS · Sistema de gestión clínica</footer>
@@ -33,11 +50,6 @@
   <script src="js/api.js"></script>
   <script src="js/sesion.js"></script>
   <script src="js/ui.js"></script>
-  <script>
-    if (exigirSesion()) {
-      pintarEstructura('medicos.html', 'Médicos', ['Médicos']);
-      document.getElementById('icono').innerHTML = icono('medicos', 26);
-    }
-  </script>
+  <script src="js/medicos.js"></script>
 </body>
 </html>
