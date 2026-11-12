@@ -92,7 +92,9 @@ public sealed class PacientesService : IPacientesService
             throw new ApiException(404, $"No existe el paciente con id {id}");
         }
 
-        var nuevoDocumento = request.Documento?.Trim() ?? string.Empty;
+        var nuevoDocumento = !string.IsNullOrWhiteSpace(request.Documento)
+            ? request.Documento.Trim()
+            : pacienteExistente.Documento;
 
         if (!string.IsNullOrEmpty(request.Documento))
         {

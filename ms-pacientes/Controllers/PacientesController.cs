@@ -1,7 +1,9 @@
 /*
 
+using Microsoft.AspNetCore.Authorization;
 */
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ms_pacientes.Exceptions;
 using ms_pacientes.Models;
@@ -11,6 +13,7 @@ namespace ms_pacientes.Controllers;
 
 [ApiController]
 [Route("pacientes")]
+[Authorize]
 public class PacientesController : ControllerBase
 {
     private readonly IPacientesService _service;
@@ -34,12 +37,24 @@ public class PacientesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Paciente>> ObtenerPorId(int id)
     {
+        var idClaim = User.FindFirst("id")?.Value;
+
+        var esAdministrador = User.IsInRole("administrador");
+
+        var esSuPropioId = int.TryParse(idClaim, out var usuarioId)
+                           && usuarioId == id;
+
+        if (!esAdministrador && !esSuPropioId)
+            return Forbid();
+
         var paciente = await _service.ObtenerPorIdAsync(id);
+
         return Ok(paciente);
     }
 
     // POST /pacientes
     [HttpPost]
+    [Authorize(Roles = "administrador, admisiones")]
     public async Task<ActionResult<Paciente>> Crear(
         [FromBody] CrearPacienteRequest request)
     {
@@ -53,6 +68,7 @@ public class PacientesController : ControllerBase
 
     // PUT /pacientes/{id}
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "administrador, admisiones")]
     public async Task<ActionResult<Paciente>> Actualizar(int id, [FromBody] ActualizarPacienteRequest request)
     {
         var actualizado = await _service.ActualizarAsync(id, request);
@@ -62,6 +78,7 @@ public class PacientesController : ControllerBase
 
     // DELETE /pacientes/{id}
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "administrador, admisiones")]
     public async Task<IActionResult> Eliminar(int id)
     {
         await _service.EliminarAsync(id);

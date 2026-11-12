@@ -96,8 +96,9 @@ public sealed class MedicosService : IMedicosService
                 $"No existe el médico con id {id}"
             );
 
-        var nuevoRegistro = request.RegistroMedico?.Trim()
-            ?? medicoExistente.RegistroMedico;
+        var nuevoRegistro = !string.IsNullOrWhiteSpace(request.RegistroMedico)
+            ? request.RegistroMedico.Trim()
+            : medicoExistente.RegistroMedico;
 
         if (!string.IsNullOrWhiteSpace(request.RegistroMedico))
         {

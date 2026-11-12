@@ -22,7 +22,6 @@ public class MedicosController : ControllerBase
     // GET /medicos
     // GET /medicos?ids=1,2,3
     [HttpGet]
-    [Authorize(Roles = "administrador")]
     public async Task<ActionResult<IReadOnlyList<Medico>>> Listar(
     [FromQuery] string? ids = null)
     {
