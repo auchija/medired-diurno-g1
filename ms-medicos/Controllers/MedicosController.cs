@@ -1,16 +1,15 @@
-/*
-
-*/
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ms_medicos.Exceptions;
 using ms_medicos.Models;
 using ms_medicos.Services;
+using System.Security.Claims;
 
 namespace ms_medicos.Controllers;
 
 [ApiController]
 [Route("medicos")]
+[Authorize]
 public class MedicosController : ControllerBase
 {
     private readonly IMedicosService _service;
@@ -23,6 +22,7 @@ public class MedicosController : ControllerBase
     // GET /medicos
     // GET /medicos?ids=1,2,3
     [HttpGet]
+    [Authorize(Roles = "administrador")]
     public async Task<ActionResult<IReadOnlyList<Medico>>> Listar(
     [FromQuery] string? ids = null)
     {
@@ -31,15 +31,27 @@ public class MedicosController : ControllerBase
     }
 
     // GET /medicos/{id}
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<Medico>> ObtenerPorId(int id)
     {
+        var idClaim = User.FindFirst("id")?.Value;
+
+        var esAdministrador = User.IsInRole("administrador");
+
+        var esSuPropioId = int.TryParse(idClaim, out var usuarioId)
+                           && usuarioId == id;
+
+        if (!esAdministrador && !esSuPropioId)
+            return Forbid();
+
         var medico = await _service.ObtenerPorIdAsync(id);
+
         return Ok(medico);
     }
 
     // POST /medicos
     [HttpPost]
+    [Authorize(Roles = "administrador")]
     public async Task<ActionResult<Medico>> Crear(
         [FromBody] CrearMedicoRequest request)
     {
@@ -53,6 +65,7 @@ public class MedicosController : ControllerBase
 
     // PUT /medicos/{id}
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "administrador")]
     public async Task<ActionResult<Medico>> Actualizar(int id, [FromBody] ActualizarMedicoRequest request)
     {
         var actualizado = await _service.ActualizarAsync(id, request);
@@ -62,6 +75,7 @@ public class MedicosController : ControllerBase
 
     // DELETE /medicos/{id}
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "administrador")]
     public async Task<IActionResult> Eliminar(int id)
     {
         await _service.EliminarAsync(id);

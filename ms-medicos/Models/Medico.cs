@@ -69,12 +69,10 @@ public sealed class ActualizarMedicoRequest
     public string? RegistroMedico { get; init; } = string.Empty;
 
     [JsonPropertyName("especialidad")]
-    [Required(ErrorMessage = "La especialidad es obligatoria")]
     [StringLength(100,
         ErrorMessage = "La especialidad no puede exceder los 100 caracteres")]
     public string? Especialidad { get; init; } = string.Empty;
 
     [JsonPropertyName("sede")]
-    [Required(ErrorMessage = "La sede es obligatoria")]
     public Sede? Sede { get; init; }
 }
