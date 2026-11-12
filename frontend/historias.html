@@ -9,17 +9,34 @@
   <title>MediRed · Historias clínicas</title>
 </head>
 <body>
-  <!-- PÁGINA PROVISIONAL: la reemplaza Miguel Ángel Jiménez con las pantallas de historias (ver frontend/README.md).
-       Mantener la estructura: .aplicacion > #lateral + .principal > #superior + main.contenido, #mensajes y #dialogo. -->
+  <!-- Pantallas de historias clínicas (responsable: Miguel Ángel Jiménez · ms-historias) -->
   <div class="aplicacion">
     <aside class="lateral" id="lateral"></aside>
     <div class="principal">
       <header class="superior" id="superior"></header>
       <main class="contenido">
-        <section class="panel en-construccion">
-          <div class="indicador-icono" id="icono"></div>
-          <h2>Módulo en desarrollo</h2>
-          <p>Este módulo estará disponible próximamente.</p>
+        <div class="aviso" id="aviso-rol" hidden></div>
+
+        <section class="panel">
+          <div class="herramientas">
+            <input class="campo-busqueda" id="filtro-texto" type="search" placeholder="Paciente, médico o diagnóstico" aria-label="Filtrar por paciente, médico o diagnóstico">
+            <select class="selector" id="filtro-paciente" aria-label="Filtrar por paciente"></select>
+            <select class="selector" id="filtro-medico" aria-label="Filtrar por médico"></select>
+            <div class="empuje"></div>
+            <button class="boton" id="nueva" hidden></button>
+          </div>
+          <div class="tabla-contenedor">
+            <table class="tabla">
+              <thead>
+                <tr><th>Fecha</th><th>Paciente</th><th>Médico</th><th>Motivo de consulta</th><th>Diagnóstico y tratamiento</th><th id="col-acciones"></th></tr>
+              </thead>
+              <tbody id="filas"></tbody>
+            </table>
+          </div>
+          <div class="pie-tabla">
+            <span id="conteo"></span>
+            <button class="boton-enlace" id="reiniciar" hidden>Restablecer datos de demostración</button>
+          </div>
         </section>
       </main>
       <footer class="pie-app">© 2026 MediRed IPS · Sistema de gestión clínica</footer>
@@ -33,11 +50,6 @@
   <script src="js/api.js"></script>
   <script src="js/sesion.js"></script>
   <script src="js/ui.js"></script>
-  <script>
-    if (exigirSesion()) {
-      pintarEstructura('historias.html', 'Historias clínicas', ['Historias clínicas']);
-      document.getElementById('icono').innerHTML = icono('historias', 26);
-    }
-  </script>
+  <script src="js/historias.js"></script>
 </body>
 </html>
