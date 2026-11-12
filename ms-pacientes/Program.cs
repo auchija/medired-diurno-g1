@@ -138,6 +138,15 @@ builder.Services.AddScoped<IPacientesService, PacientesService>();
 
 var app = builder.Build();
 
+// Registro en la terminal: una línea por petición con su código de respuesta y duración.
+app.Use(async (context, next) =>
+{
+    var inicio = DateTime.Now;
+    await next();
+    var ms = (int)(DateTime.Now - inicio).TotalMilliseconds;
+    Console.WriteLine($"{inicio:HH:mm:ss} {context.Request.Method} {context.Request.Path}{context.Request.QueryString} → {context.Response.StatusCode} ({ms} ms)");
+});
+
 // Capturar excepciones no controladas y responder en JSON.
 app.Use(async (context, next) =>
 {
@@ -198,6 +207,9 @@ app.MapGet("/health", () => Results.Ok(new
     servicio = "ms-pacientes",
     estado = "ok"
 }));
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Rutas de los controladores.
 app.MapControllers();
