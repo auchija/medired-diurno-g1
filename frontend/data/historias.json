@@ -1,0 +1,18 @@
+[
+  { "id": 1, "paciente_id": 1, "medico_id": 1, "fecha": "2025-02-10",
+    "motivo_consulta": "Dolor de cabeza persistente", "diagnostico": "Migraña", "tratamiento": "Acetaminofén 500 mg cada 8 horas por 3 días",
+    "paciente": { "id": 1, "nombre": "Lucía Gómez" },
+    "medico": { "id": 1, "nombre": "Carlos Ruiz", "especialidad": "Medicina general" } },
+  { "id": 2, "paciente_id": 2, "medico_id": 3, "fecha": "2025-04-22",
+    "motivo_consulta": "Tos y fiebre", "diagnostico": "Infección respiratoria aguda", "tratamiento": "Reposo, hidratación y control en 5 días",
+    "paciente": { "id": 2, "nombre": "Mateo Rodríguez" },
+    "medico": { "id": 3, "nombre": "Andrés Mendoza", "especialidad": "Cardiología" } },
+  { "id": 3, "paciente_id": 3, "medico_id": 2, "fecha": "2025-07-15",
+    "motivo_consulta": "Control de presión arterial", "diagnostico": "Hipertensión arterial controlada", "tratamiento": "Continuar losartán 50 mg diarios",
+    "paciente": { "id": 3, "nombre": "Valentina Pérez" },
+    "medico": { "id": 2, "nombre": "Mariana Torres", "especialidad": "Pediatría" } },
+  { "id": 4, "paciente_id": 1, "medico_id": 3, "fecha": "2025-09-05",
+    "motivo_consulta": "Palpitaciones al hacer ejercicio", "diagnostico": "Arritmia sinusal benigna", "tratamiento": "Electrocardiograma de control en 3 meses",
+    "paciente": { "id": 1, "nombre": "Lucía Gómez" },
+    "medico": { "id": 3, "nombre": "Andrés Mendoza", "especialidad": "Cardiología" } }
+]
