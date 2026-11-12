@@ -9,17 +9,33 @@
   <title>MediRed · Pacientes</title>
 </head>
 <body>
-  <!-- PÁGINA PROVISIONAL: la reemplaza Sebastián Montaño con las pantallas de pacientes (ver frontend/README.md).
-       Mantener la estructura: .aplicacion > #lateral + .principal > #superior + main.contenido, #mensajes y #dialogo. -->
+  <!-- Pantallas de pacientes (responsable: Sebastián Montaño · ms-pacientes) -->
   <div class="aplicacion">
     <aside class="lateral" id="lateral"></aside>
     <div class="principal">
       <header class="superior" id="superior"></header>
       <main class="contenido">
-        <section class="panel en-construccion">
-          <div class="indicador-icono" id="icono"></div>
-          <h2>Módulo en desarrollo</h2>
-          <p>Este módulo estará disponible próximamente.</p>
+        <div class="aviso" id="aviso-rol" hidden></div>
+
+        <section class="panel">
+          <div class="herramientas">
+            <input class="campo-busqueda" id="filtro-texto" type="search" placeholder="Buscar por nombre o documento" aria-label="Buscar por nombre o documento">
+            <select class="selector" id="filtro-eps" aria-label="Filtrar por EPS"></select>
+            <div class="empuje"></div>
+            <button class="boton" id="nuevo" hidden></button>
+          </div>
+          <div class="tabla-contenedor">
+            <table class="tabla">
+              <thead>
+                <tr><th>Paciente</th><th>Documento</th><th>Fecha de nacimiento</th><th>EPS</th><th>Teléfono</th><th id="col-acciones" hidden></th></tr>
+              </thead>
+              <tbody id="filas"></tbody>
+            </table>
+          </div>
+          <div class="pie-tabla">
+            <span id="conteo"></span>
+            <button class="boton-enlace" id="reiniciar" hidden>Restablecer datos de demostración</button>
+          </div>
         </section>
       </main>
       <footer class="pie-app">© 2026 MediRed IPS · Sistema de gestión clínica</footer>
@@ -33,11 +49,6 @@
   <script src="js/api.js"></script>
   <script src="js/sesion.js"></script>
   <script src="js/ui.js"></script>
-  <script>
-    if (exigirSesion()) {
-      pintarEstructura('pacientes.html', 'Pacientes', ['Pacientes']);
-      document.getElementById('icono').innerHTML = icono('pacientes', 26);
-    }
-  </script>
+  <script src="js/pacientes.js"></script>
 </body>
 </html>
