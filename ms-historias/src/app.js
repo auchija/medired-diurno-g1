@@ -13,8 +13,12 @@ app.use(cors());
 
 app.use(express.json());
 
+// Registro en la terminal: una línea por petición con su código de respuesta y duración
 app.use((req, res, next) => {
-  console.log(`${new Date().toLocaleTimeString()} ${req.method} ${req.originalUrl}`);
+  const inicio = Date.now();
+  res.on('finish', () => {
+    console.log(`${new Date().toLocaleTimeString()} ${req.method} ${req.originalUrl} → ${res.statusCode} (${Date.now() - inicio} ms)`);
+  });
   next();
 });
 
