@@ -7,13 +7,17 @@ const MEDICOS_URL = process.env.MEDICOS_URL;
 
 
 async function pedir(ruta, token) {
+  const inicio = Date.now();
   try {
-    return await fetch(`${MEDICOS_URL}${ruta}`, {
-      headers: { Authorization: token },        
-      signal: AbortSignal.timeout(3000),        
+    const respuesta = await fetch(`${MEDICOS_URL}${ruta}`, {
+      headers: { Authorization: token },
+      signal: AbortSignal.timeout(3000),
     });
+    console.log(`   ↳ consulta a ms-medicos: GET ${ruta} → ${respuesta.status} (${Date.now() - inicio} ms)`);
+    return respuesta;
   } catch (error) {
-    return null;                                 
+    console.log(`   ↳ consulta a ms-medicos: GET ${ruta} → sin respuesta (${Date.now() - inicio} ms)`);
+    return null;
   }
 }
 

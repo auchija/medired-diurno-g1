@@ -7,12 +7,16 @@ const PACIENTES_URL = process.env.PACIENTES_URL;
 
 // Hace la petición reenviando el token del usuario. null si no hubo respuesta.
 async function pedir(ruta, token) {
+  const inicio = Date.now();
   try {
-    return await fetch(`${PACIENTES_URL}${ruta}`, {
+    const respuesta = await fetch(`${PACIENTES_URL}${ruta}`, {
       headers: { Authorization: token },        // el token de la petición original
       signal: AbortSignal.timeout(3000),         // no esperar más de 3 segundos
     });
+    console.log(`   ↳ consulta a ms-pacientes: GET ${ruta} → ${respuesta.status} (${Date.now() - inicio} ms)`);
+    return respuesta;
   } catch (error) {
+    console.log(`   ↳ consulta a ms-pacientes: GET ${ruta} → sin respuesta (${Date.now() - inicio} ms)`);
     return null;                                 // ms-pacientes caído o sin responder
   }
 }
