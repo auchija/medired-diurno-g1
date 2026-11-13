@@ -14,6 +14,9 @@ public interface IMedicosRepository
 
     Task<Medico?> FindByRegistroMedicoAsync(string registroMedico);
 
+    Task<IReadOnlyList<Medico>> FindByEspecialidadAsync(string especialidad);
+
+
     Task<Medico> CreateAsync(Medico medico);
 
     Task<Medico?> UpdateAsync(int id, Medico medico);

@@ -37,6 +37,16 @@ public class MedicosController : ControllerBase
         return Ok(medico);
     }
 
+    // GET /medicos/especialidad?especialidad=...
+    [HttpGet("especialidad")]
+    public async Task<ActionResult<IReadOnlyList<Medico>>> ObtenerPorEspecialidad(
+        [FromQuery] string especialidad)
+    {
+        var medicos = await _service.ObtenerPorEspecialidadAsync(especialidad);
+        return Ok(medicos);
+    }
+
+
     // POST /medicos
     [HttpPost]
     [Authorize(Roles = "administrador")]

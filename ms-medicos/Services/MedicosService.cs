@@ -54,6 +54,18 @@ public sealed class MedicosService : IMedicosService
         return medico;
     }
 
+    public async Task<IReadOnlyList<Medico>> ObtenerPorEspecialidadAsync(
+    string especialidad)
+    {
+        if (string.IsNullOrWhiteSpace(especialidad))
+        {
+            throw new ApiException(400, "La especialidad es obligatoria.");
+        }
+
+        return await _repo.FindByEspecialidadAsync(especialidad.Trim());
+    }
+
+
     public async Task<Medico> CrearAsync(CrearMedicoRequest request)
     {
         var registroMedico = request.RegistroMedico.Trim();

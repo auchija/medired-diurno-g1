@@ -47,6 +47,17 @@ public sealed class PacientesService : IPacientesService
         return paciente;
     }
 
+    public async Task<IReadOnlyList<Paciente>> ObtenerPorEpsAsync(string eps)
+    {
+        if (string.IsNullOrWhiteSpace(eps))
+        {
+            throw new ApiException(400, "La EPS es obligatoria.");
+        }
+
+        return await _repo.FindByEpsAsync(eps.Trim());
+    }
+
+
     public async Task<Paciente> CrearAsync(CrearPacienteRequest request)
     {
         var documento = request.Documento.Trim();

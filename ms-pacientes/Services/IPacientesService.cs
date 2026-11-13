@@ -8,6 +8,8 @@ public interface IPacientesService
 
     Task<Paciente> ObtenerPorIdAsync(int id);
 
+    Task<IReadOnlyList<Paciente>> ObtenerPorEpsAsync(string eps);
+
     Task<Paciente> CrearAsync(CrearPacienteRequest request);
 
     Task<Paciente> ActualizarAsync(int id, ActualizarPacienteRequest request);

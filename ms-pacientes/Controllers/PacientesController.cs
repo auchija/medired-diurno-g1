@@ -41,6 +41,15 @@ public class PacientesController : ControllerBase
         return Ok(paciente);
     }
 
+    // GET /pacientes/eps?eps=...
+    [HttpGet("eps")]
+    public async Task<ActionResult<IReadOnlyList<Paciente>>> ObtenerPorEps(
+        [FromQuery] string eps)
+    {
+        var pacientes = await _service.ObtenerPorEpsAsync(eps);
+        return Ok(pacientes);
+    }
+
     // POST /pacientes
     [HttpPost]
     [Authorize(Roles = "administrador, admisiones")]

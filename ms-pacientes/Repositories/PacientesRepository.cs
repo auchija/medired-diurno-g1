@@ -142,6 +142,35 @@ public sealed class PacientesRepository : IPacientesRepository
         return null;
     }
 
+    // Obtiene pacientes por EPS.
+    public async Task<IReadOnlyList<Paciente>> FindByEpsAsync(string eps)
+    {
+        await using var connection = _connectionFactory.CreateConnection();
+        await connection.OpenAsync();
+
+        const string sql = """
+        SELECT id, nombre, documento, fecha_nacimiento, eps, telefono
+        FROM pacientes
+        WHERE eps = @eps
+        ORDER BY id;
+        """;
+
+        await using var command = new MySqlCommand(sql, connection);
+        command.Parameters.AddWithValue("@eps", eps);
+
+        await using var reader = await command.ExecuteReaderAsync();
+
+        var pacientes = new List<Paciente>();
+
+        while (await reader.ReadAsync())
+        {
+            pacientes.Add(MapPaciente(reader));
+        }
+
+        return pacientes;
+    }
+
+
     // Registra un paciente nuevo.
     public async Task<Paciente> CreateAsync(Paciente paciente)
     {

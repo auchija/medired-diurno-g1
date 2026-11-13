@@ -8,6 +8,8 @@ public interface IPacientesRepository
     public Task<Paciente?> FindByIdAsync(int id);
     Task<IReadOnlyList<Paciente>> FindByIdsAsync(IReadOnlyCollection<int> ids);
     public Task<Paciente?> FindByDocumentAsync(string documento);
+    Task<IReadOnlyList<Paciente>> FindByEpsAsync(string eps);
+
     public Task<Paciente> CreateAsync(Paciente paciente);
     Task<Paciente?> UpdateAsync(int id, Paciente paciente);
     Task<bool> RemoveAsync(int id);

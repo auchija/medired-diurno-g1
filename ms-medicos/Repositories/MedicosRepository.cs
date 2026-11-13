@@ -149,6 +149,36 @@ public sealed class MedicosRepository : IMedicosRepository
         return null;
     }
 
+    // Obtiene médicos de una especialidad.
+    public async Task<IReadOnlyList<Medico>> FindByEspecialidadAsync(
+        string especialidad)
+    {
+        await using var connection = _connectionFactory.CreateConnection();
+        await connection.OpenAsync();
+
+        const string sql = """
+        SELECT id, nombre, registro_medico, especialidad, sede
+        FROM medicos
+        WHERE especialidad = @especialidad
+        ORDER BY id;
+        """;
+
+        await using var command = new MySqlCommand(sql, connection);
+        command.Parameters.AddWithValue("@especialidad", especialidad);
+
+        await using var reader = await command.ExecuteReaderAsync();
+
+        var medicos = new List<Medico>();
+
+        while (await reader.ReadAsync())
+        {
+            medicos.Add(MapMedico(reader));
+        }
+
+        return medicos;
+    }
+
+
     // Registra un médico nuevo.
     public async Task<Medico> CreateAsync(Medico medico)
     {
