@@ -1,11 +1,7 @@
 // =====================================================================
-// ACCESO A DATOS: el ÚNICO lugar del frontend que obtiene y guarda datos.
-// Las pantallas nunca leen los archivos directamente: siempre llaman a api.
-//
-// Taller 2: los datos salen de los archivos de ejemplo data/<recurso>.json
-//           y los cambios se guardan en la sesión del navegador.
-// Taller 3: se reemplaza el interior de estas funciones por fetch a
-//           '/api/<recurso>' con el token; las pantallas no cambian.
+// ACCESO A DATOS: el ÚNICO lugar del frontend que habla con la API.
+// Todas las peticiones pasan por el gateway (/api/<recurso>) con el token del usuario.
+// Las pantallas no saben de fetch ni de tokens: solo llaman a api.listar, api.crear, etc.
 // =====================================================================
 
 // Error con el mismo formato de los microservicios: { error, detalles }
@@ -17,63 +13,84 @@ class ErrorApi extends Error {
   }
 }
 
-// Carga la lista de un recurso: primero lo guardado en la sesión, si no, el archivo de ejemplo
-async function cargar(recurso) {
-  const guardado = sessionStorage.getItem(`datos:${recurso}`);
-  if (guardado) return JSON.parse(guardado);
-  const respuesta = await fetch(`${FUENTE_DATOS}/${recurso}.json`);
-  if (!respuesta.ok) throw new ErrorApi(503, `No se pudieron cargar los datos de ${recurso}`);
-  return respuesta.json();
+// Única función que hace peticiones: agrega el token y maneja los errores igual en toda la aplicación
+async function peticion(ruta, opciones = {}) {
+  const token = sessionStorage.getItem('token');
+  let respuesta;
+  try {
+    respuesta = await fetch(`${API}${ruta}`, {
+      ...opciones,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+  } catch (error) {
+    throw new ErrorApi(503, 'No se pudo conectar con el servidor');
+  }
+
+  // Sin sesión o token vencido: se borra la sesión y se vuelve al inicio de sesión
+  if (respuesta.status === 401 && !ruta.startsWith('/usuarios/login')) {
+    sessionStorage.clear();
+    location.href = 'index.html';
+    throw new ErrorApi(401, 'La sesión expiró. Inicie sesión de nuevo.');
+  }
+  if (respuesta.status === 204) return null;
+
+  // Los microservicios responden JSON; si un servicio está detenido, Apache responde una página HTML (503)
+  let datos = null;
+  try {
+    datos = await respuesta.json();
+  } catch (error) {
+    datos = null;
+  }
+  if (!respuesta.ok) {
+    const mensaje = datos?.error
+      || (respuesta.status === 503 ? 'El servicio no está disponible en este momento' : `Error ${respuesta.status}`);
+    throw new ErrorApi(respuesta.status, mensaje, datos?.detalles || []);
+  }
+  return datos;
 }
 
-function guardar(recurso, lista) {
-  sessionStorage.setItem(`datos:${recurso}`, JSON.stringify(lista));
+// Arma la parte ?atributo=valor solo con los filtros que el microservicio acepta
+function separarFiltros(recurso, filtros) {
+  const enApi = new URLSearchParams();
+  const enNavegador = {};
+  for (const [clave, valor] of Object.entries(filtros)) {
+    if (valor === '' || valor === undefined || valor === null) continue;
+    if ((FILTROS_API[recurso] || []).includes(clave)) enApi.set(clave, valor);
+    else enNavegador[clave] = valor;
+  }
+  const consulta = enApi.toString();
+  return { consulta: consulta ? `?${consulta}` : '', enNavegador };
 }
 
 const api = {
-  // GET /recurso?atributo=valor  → lista (filtra por igualdad)
+  // GET /recurso?atributo=valor → lista
   async listar(recurso, filtros = {}) {
-    const lista = await cargar(recurso);
+    const { consulta, enNavegador } = separarFiltros(recurso, filtros);
+    const lista = await peticion(`/${recurso}${consulta}`);
     return lista.filter((item) =>
-      Object.entries(filtros).every(([clave, valor]) => valor === '' || String(item[clave]) === String(valor)));
+      Object.entries(enNavegador).every(([clave, valor]) => String(item[clave]) === String(valor)));
   },
 
-  // GET /recurso/:id → objeto o 404
-  async obtener(recurso, id) {
-    const item = (await cargar(recurso)).find((x) => x.id === Number(id));
-    if (!item) throw new ErrorApi(404, `No existe ${recurso} con id ${id}`);
-    return item;
+  // GET /recurso/:id → objeto (404 si no existe)
+  obtener(recurso, id) {
+    return peticion(`/${recurso}/${id}`);
   },
 
-  // POST /recurso → objeto creado (con id nuevo)
-  async crear(recurso, datos) {
-    const lista = await cargar(recurso);
-    const nuevo = { id: Math.max(0, ...lista.map((x) => x.id)) + 1, ...datos };
-    lista.push(nuevo);
-    guardar(recurso, lista);
-    return nuevo;
+  // POST /recurso → objeto creado
+  crear(recurso, datos) {
+    return peticion(`/${recurso}`, { method: 'POST', body: JSON.stringify(datos) });
   },
 
-  // PUT /recurso/:id → objeto actualizado o 404
-  async actualizar(recurso, id, datos) {
-    const lista = await cargar(recurso);
-    const i = lista.findIndex((x) => x.id === Number(id));
-    if (i === -1) throw new ErrorApi(404, `No existe ${recurso} con id ${id}`);
-    lista[i] = { ...datos, id: Number(id) };
-    guardar(recurso, lista);
-    return lista[i];
+  // PUT /recurso/:id → objeto actualizado
+  actualizar(recurso, id, datos) {
+    return peticion(`/${recurso}/${id}`, { method: 'PUT', body: JSON.stringify(datos) });
   },
 
-  // DELETE /recurso/:id → nada o 404
-  async eliminar(recurso, id) {
-    const lista = await cargar(recurso);
-    const restantes = lista.filter((x) => x.id !== Number(id));
-    if (restantes.length === lista.length) throw new ErrorApi(404, `No existe ${recurso} con id ${id}`);
-    guardar(recurso, restantes);
-  },
-
-  // Solo para las pruebas: vuelve a los datos del archivo de ejemplo
-  reiniciar(recurso) {
-    sessionStorage.removeItem(`datos:${recurso}`);
+  // DELETE /recurso/:id → nada (204)
+  eliminar(recurso, id) {
+    return peticion(`/${recurso}/${id}`, { method: 'DELETE' });
   },
 };

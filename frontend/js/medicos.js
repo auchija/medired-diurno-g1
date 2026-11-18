@@ -31,9 +31,6 @@ async function iniciar() {
     aviso.hidden = false;
     aviso.innerHTML = `${icono('escudo', 18)} Su perfil (${esc(NOMBRE_ROL[usuario.rol])}) permite consultar los médicos. Para registrar, modificar o eliminar médicos comuníquese con el administrador.`;
   }
-  const reiniciar = document.getElementById('reiniciar');
-  reiniciar.hidden = usuario.rol !== 'administrador';
-  reiniciar.onclick = async () => { await api.reiniciar('medicos'); await cargarEspecialidades(); listar(); };
 
   // Filtro de texto
   const campoTexto = document.getElementById('filtro-texto');
@@ -183,14 +180,9 @@ async function editarMedico(id) {
   }
 }
 
-// Regla (supuesta): no se elimina un médico con citas programadas
 async function eliminarMedico(id) {
   try {
     const medico = await api.obtener('medicos', id);
-    const pendientes = (await api.listar('citas', { medico_id: id })).filter((c) => c.estado === 'programada');
-    if (pendientes.length) {
-      throw new ErrorApi(409, `${medico.nombre} tiene ${pendientes.length} cita(s) programada(s) y no puede eliminarse`);
-    }
     if (!(await confirmar(`¿Eliminar al médico ${medico.nombre}?`, 'Eliminar'))) return;
     await api.eliminar('medicos', id);
     mostrarMensaje('Médico eliminado');

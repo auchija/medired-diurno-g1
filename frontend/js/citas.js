@@ -29,9 +29,6 @@ async function iniciar() {
     aviso.hidden = false;
     aviso.innerHTML = `${icono('escudo', 18)} Su perfil (${esc(NOMBRE_ROL[usuario.rol])}) permite consultar la agenda. Para agendar, modificar o cancelar citas comuníquese con Admisiones.`;
   }
-  const reiniciar = document.getElementById('reiniciar');
-  reiniciar.hidden = usuario.rol !== 'administrador';
-  reiniciar.onclick = () => { api.reiniciar('citas'); listar(); };
 
   // Filtro de texto
   const campoTexto = document.getElementById('filtro-texto');
@@ -140,35 +137,17 @@ function camposCita(conEstado) {
   return campos;
 }
 
-// Convierte lo escrito en el formulario al formato del contrato de ms-citas
+// Convierte lo escrito en el formulario al formato del contrato de ms-citas.
+// Las reglas (fecha futura, choque de horario, paciente y médico existentes) las valida ms-citas:
+// si no se cumplen, su respuesta 400 o 409 se muestra como mensaje.
 function construirCita(datos) {
-  const paciente = pacientes.find((p) => p.id === Number(datos.paciente_id));
-  const medico = medicos.find((m) => m.id === Number(datos.medico_id));
   return {
     paciente_id: Number(datos.paciente_id),
     medico_id: Number(datos.medico_id),
     fecha_hora: datos.fecha_hora.slice(0, 16),           // AAAA-MM-DDTHH:MM
     sede: datos.sede,
     estado: datos.estado || 'programada',
-    // Objetos compuestos, como los devuelve ms-citas
-    paciente: paciente ? { id: paciente.id, nombre: paciente.nombre } : null,
-    medico: medico ? { id: medico.id, nombre: medico.nombre, especialidad: medico.especialidad } : null,
   };
-}
-
-// Las mismas reglas de negocio de ms-citas (el microservicio las vuelve a validar)
-async function validarReglas(cita, idActual = null) {
-  if (new Date(cita.fecha_hora) <= new Date()) {
-    throw new ErrorApi(400, 'Datos inválidos', ['la fecha y hora de la cita debe ser futura']);
-  }
-  if (cita.estado !== 'cancelada') {
-    const choque = (await api.listar('citas', { medico_id: cita.medico_id, fecha_hora: cita.fecha_hora }))
-      .find((c) => c.id !== idActual && c.estado !== 'cancelada');
-    if (choque) {
-      const f = formatearFecha(cita.fecha_hora);
-      throw new ErrorApi(409, `${cita.medico?.nombre || 'El médico'} ya tiene una cita el ${f.dia} a las ${f.hora}`);
-    }
-  }
 }
 
 async function crearCita() {
@@ -176,7 +155,6 @@ async function crearCita() {
   if (!datos) return;
   try {
     const cita = construirCita(datos);
-    await validarReglas(cita);
     const nueva = await api.crear('citas', cita);
     const f = formatearFecha(nueva.fecha_hora);
     mostrarMensaje(`Cita agendada para ${nueva.paciente?.nombre || 'el paciente'} el ${f.dia} a las ${f.hora}`);
@@ -192,7 +170,6 @@ async function editarCita(id) {
     const datos = await pedirDatos('Editar cita', camposCita(true), actual, 'Guardar cambios');
     if (!datos) return;
     const cita = construirCita(datos);
-    await validarReglas(cita, id);
     await api.actualizar('citas', id, cita);
     mostrarMensaje('Cita actualizada');
     listar();

@@ -31,9 +31,6 @@ async function iniciar() {
     aviso.hidden = false;
     aviso.innerHTML = `${icono('escudo', 18)} Su perfil (${esc(NOMBRE_ROL[usuario.rol])}) permite consultar los pacientes. Para registrar, modificar o eliminar pacientes comuníquese con Admisiones.`;
   }
-  const reiniciar = document.getElementById('reiniciar');
-  reiniciar.hidden = usuario.rol !== 'administrador';
-  reiniciar.onclick = async () => { await api.reiniciar('pacientes'); await cargarEps(); listar(); };
 
   // Filtro de texto
   const campoTexto = document.getElementById('filtro-texto');
@@ -147,10 +144,7 @@ async function validarPaciente(paciente, idActual = null) {
   if (!paciente.eps) errores.push('La EPS es obligatoria');
   if (!paciente.telefono) errores.push('El teléfono es obligatorio');
   if (errores.length) throw new ErrorApi(400, 'Datos inválidos', errores);
-
-  // Regla (supuesta): el documento no se repite entre pacientes
-  const repetido = (await api.listar('pacientes')).find((p) => p.documento === paciente.documento && p.id !== idActual);
-  if (repetido) throw new ErrorApi(409, `Ya existe un paciente con el documento ${paciente.documento}`);
+  // El documento repetido (409) lo valida ms-pacientes: su respuesta se muestra como mensaje
 }
 
 async function crearPaciente() {
@@ -184,14 +178,9 @@ async function editarPaciente(id) {
   }
 }
 
-// Regla (supuesta): no se elimina un paciente con citas programadas
 async function eliminarPaciente(id) {
   try {
     const paciente = await api.obtener('pacientes', id);
-    const pendientes = (await api.listar('citas')).filter((c) => c.paciente_id === id && c.estado === 'programada');
-    if (pendientes.length) {
-      throw new ErrorApi(409, `${paciente.nombre} tiene ${pendientes.length} cita(s) programada(s) y no puede eliminarse`);
-    }
     if (!(await confirmar(`¿Eliminar al paciente ${paciente.nombre}?`, 'Eliminar'))) return;
     await api.eliminar('pacientes', id);
     mostrarMensaje('Paciente eliminado');

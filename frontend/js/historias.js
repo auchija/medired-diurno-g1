@@ -28,9 +28,6 @@ async function iniciar() {
     aviso.hidden = false;
     aviso.innerHTML = `${icono('escudo', 18)} Su perfil (${esc(NOMBRE_ROL[usuario.rol])}) permite consultar las historias clínicas. Para registrar o modificar una atención comuníquese con el cuerpo médico.`;
   }
-  const reiniciar = document.getElementById('reiniciar');
-  reiniciar.hidden = usuario.rol !== 'administrador';
-  reiniciar.onclick = () => { api.reiniciar('historias'); listar(); };
 
   // Filtro de texto
   const campoTexto = document.getElementById('filtro-texto');
@@ -124,10 +121,10 @@ function camposHistoria() {
   ];
 }
 
-// Convierte lo escrito en el formulario al formato del contrato de ms-historias
+// Convierte lo escrito en el formulario al formato del contrato de ms-historias.
+// La regla de fecha no futura y la existencia del paciente y del médico las valida ms-historias:
+// si no se cumplen, su respuesta 400 se muestra como mensaje.
 function construirHistoria(datos) {
-  const paciente = pacientes.find((p) => p.id === Number(datos.paciente_id));
-  const medico = medicos.find((m) => m.id === Number(datos.medico_id));
   return {
     paciente_id: Number(datos.paciente_id),
     medico_id: Number(datos.medico_id),
@@ -135,17 +132,7 @@ function construirHistoria(datos) {
     motivo_consulta: datos.motivo_consulta,
     diagnostico: datos.diagnostico,
     tratamiento: datos.tratamiento,
-    // Objetos compuestos, como los devuelve ms-historias
-    paciente: paciente ? { id: paciente.id, nombre: paciente.nombre } : null,
-    medico: medico ? { id: medico.id, nombre: medico.nombre, especialidad: medico.especialidad } : null,
   };
-}
-
-// La misma regla de negocio de ms-historias (el microservicio la vuelve a validar)
-function validarReglas(historia) {
-  if (historia.fecha > hoy()) {
-    throw new ErrorApi(400, 'Datos inválidos', [`la fecha de la atención no puede ser futura (hoy es ${hoy()})`]);
-  }
 }
 
 async function crearHistoria() {
@@ -153,7 +140,6 @@ async function crearHistoria() {
   if (!datos) return;
   try {
     const historia = construirHistoria(datos);
-    validarReglas(historia);
     const nueva = await api.crear('historias', historia);
     mostrarMensaje(`Historia clínica registrada para ${nueva.paciente?.nombre || 'el paciente'} el ${formatearFecha(nueva.fecha)}`);
     listar();
@@ -168,7 +154,6 @@ async function editarHistoria(id) {
     const datos = await pedirDatos('Editar historia clínica', camposHistoria(), actual, 'Guardar cambios');
     if (!datos) return;
     const historia = construirHistoria(datos);
-    validarReglas(historia);
     await api.actualizar('historias', id, historia);
     mostrarMensaje('Historia clínica actualizada');
     listar();

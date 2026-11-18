@@ -29,11 +29,6 @@
           <button class="boton" type="submit">Ingresar</button>
         </form>
 
-        <!-- Inicio de sesión simulado (Taller 2): atajos para llenar el formulario con los usuarios de prueba -->
-        <div class="demo">
-          <p>Acceso de demostración</p>
-          <div class="demo-usuarios" id="demo"></div>
-        </div>
         <p class="login-pie">© 2026 MediRed IPS · Uso exclusivo del personal autorizado</p>
       </div>
     </section>
@@ -49,26 +44,19 @@
 
     const formulario = document.getElementById('formulario');
     const error = document.getElementById('error');
-    formulario.onsubmit = (evento) => {
+    const boton = formulario.querySelector('button[type=submit]');
+    formulario.onsubmit = async (evento) => {
       evento.preventDefault();
+      error.hidden = true;
+      boton.disabled = true;
       try {
-        iniciarSesion(formulario.elements.email.value, formulario.elements.password.value);
+        await iniciarSesion(formulario.elements.email.value, formulario.elements.password.value);
       } catch (e) {
         error.textContent = e.message;
         error.hidden = false;
+      } finally {
+        boton.disabled = false;
       }
-    };
-
-    // Atajos de demostración: llenan el correo y la contraseña del usuario de prueba
-    const demo = document.getElementById('demo');
-    demo.innerHTML = USUARIOS_DE_PRUEBA.map((u, i) => `<button type="button" data-i="${i}">${esc(NOMBRE_ROL[u.rol])}</button>`).join('');
-    demo.onclick = (evento) => {
-      const boton = evento.target.closest('[data-i]');
-      if (!boton) return;
-      const u = USUARIOS_DE_PRUEBA[boton.dataset.i];
-      formulario.elements.email.value = u.email;
-      formulario.elements.password.value = u.password;
-      error.hidden = true;
     };
   </script>
 </body>

@@ -1,12 +1,21 @@
 // =====================================================================
 // CONFIGURACIÓN DEL FRONTEND (común a todas las pantallas)
-// Roles, permisos, módulos del menú y usuarios del inicio de sesión simulado.
+// Roles, permisos, módulos del menú y dirección de la API.
 // La mantiene el integrador: si cambia un permiso, se cambia solo aquí.
 // =====================================================================
 
-// De dónde salen los datos. Taller 2: archivos de ejemplo en data/.
-// Taller 3: '/api' (el gateway Apache), y api.js hará peticiones reales.
-const FUENTE_DATOS = 'data';
+// Dirección de la API: el gateway Apache publica el frontend y la API en el mismo nombre
+// (http://app.medired.com.co), por eso basta una ruta relativa, sin servidor ni puerto.
+const API = '/api';
+
+// Filtros que cada microservicio acepta en la URL (GET /recurso?atributo=valor).
+// Los demás filtros de las pantallas se aplican en el navegador sobre la misma respuesta.
+const FILTROS_API = {
+  citas: ['estado', 'medico_id', 'paciente_id'],
+  historias: ['paciente_id', 'medico_id'],
+  pacientes: [],
+  medicos: [],
+};
 
 // Módulos del sistema: un módulo por microservicio (y su responsable)
 // (responsable: quién del grupo hace las pantallas; no se muestra en la interfaz)
@@ -26,13 +35,8 @@ const PERMISOS_ESCRITURA = {
   historias: ['administrador', 'medico'],
 };
 
-// Usuarios del inicio de sesión simulado: los mismos usuarios de prueba (ficticios) de ms-usuarios.
-// En el Taller 3 el inicio de sesión lo valida ms-usuarios (POST /usuarios/login) y esta lista desaparece.
-const USUARIOS_DE_PRUEBA = [
-  { id: 1, nombre: 'Administrador General', email: 'admin@empresa.com',      password: 'Admin2026*',      rol: 'administrador', cargo: 'Administración del sistema' },
-  { id: 3, nombre: 'Usuario Admisiones',    email: 'admisiones@medired.com', password: 'Admisiones2026*', rol: 'admisiones',    cargo: 'Admisiones y citas' },
-  { id: 2, nombre: 'Usuario Médico',        email: 'medico@medired.com',     password: 'Medico2026*',     rol: 'medico',        cargo: 'Cuerpo médico' },
-];
+// Página a la que llega cada rol al iniciar sesión (el panel muestra los accesos de ese rol)
+const PAGINA_POR_ROL = { administrador: 'inicio.html', admisiones: 'inicio.html', medico: 'inicio.html' };
 
 // Nombre visible de cada rol
 const NOMBRE_ROL = { administrador: 'Administrador', admisiones: 'Admisiones', medico: 'Médico' };
