@@ -1,0 +1,13 @@
+[Unit]
+Description=Microservicio historias - MediRed
+After=network.target
+
+[Service]
+User=nodeapps
+Group=nodeapps
+WorkingDirectory=/srv/medired/app/ms-historias
+ExecStart=/usr/bin/node --env-file=.env src/index.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
